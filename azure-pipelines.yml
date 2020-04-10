@@ -3,11 +3,13 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+
+
 trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-2019'
 
 resources:
   repositories:
@@ -15,15 +17,14 @@ resources:
     type: github
     name: Azure-Devops-PowerShell-Module/authentication
     endpoint: Azure-Devops-PowerShell-Module
-    ref: refs/heads/master
+    ref: refs/tags/$(Tag)
 
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
+- powershell: Get-ChildItem . -Recurse
+  displayName: Say hello
+  name: firstStep
+  workingDirectory: $(build.sourcesDirectory)
+  failOnStderr: true
+  env:
+    name: Microsoft
