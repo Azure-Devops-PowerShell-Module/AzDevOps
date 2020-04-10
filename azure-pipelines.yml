@@ -55,8 +55,9 @@ stages:
       - checkout: projects
       - checkout: teams
       - powershell: | 
-          Set-Location .\AzDevOps
-          git switch -c test
+          New-Item Staging -Itemtype Directory
+          Set-Location .\Staging
+          git checkout $(Build.SourceBranchName)
         displayName: Git Switch Branch
         name: GitSwitchBRanch
         workingDirectory: $(build.sourcesDirectory)
@@ -69,53 +70,53 @@ stages:
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: | 
-          New-Item .\AzDevOps\authentication -Itemtype Directory 
-          New-Item .\AzDevOps\authentication\en-us -Itemtype Directory
-          Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
-          Copy-Item .\authentication\docs\en-us\* .\AzDevOps\authentication\en-us
+          New-Item .\Staging\authentication -Itemtype Directory 
+          New-Item .\Staging\authentication\en-us -Itemtype Directory
+          Copy-Item .\authentication\authentication.* .\Staging\authentication
+          Copy-Item .\authentication\docs\en-us\* .\Staging\authentication\en-us
         displayName: Authentication File Copy
         name: AuthenticationFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
-          New-Item .\AzDevOps\operations -Itemtype Directory 
-          New-Item .\AzDevOps\operations\en-us -Itemtype Directory
-          Copy-Item .\operations\operations.* .\AzDevOps\operations
-          Copy-Item .\operations\docs\en-us\* .\AzDevOps\operations\en-us
+          New-Item .\Staging\operations -Itemtype Directory 
+          New-Item .\Staging\operations\en-us -Itemtype Directory
+          Copy-Item .\operations\operations.* .\Staging\operations
+          Copy-Item .\operations\docs\en-us\* .\Staging\operations\en-us
         displayName: Operations File Copy
         name: OperationsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
-          New-Item .\AzDevOps\processes -Itemtype Directory 
-          New-Item .\AzDevOps\processes\en-us -Itemtype Directory
-          Copy-Item .\processes\processes.* .\AzDevOps\processes
-          Copy-Item .\processes\docs\en-us\* .\AzDevOps\processes\en-us
+          New-Item .\Staging\processes -Itemtype Directory 
+          New-Item .\Staging\processes\en-us -Itemtype Directory
+          Copy-Item .\processes\processes.* .\Staging\processes
+          Copy-Item .\processes\docs\en-us\* .\Staging\processes\en-us
         displayName: Processes File Copy
         name: ProcessesFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
-          New-Item .\AzDevOps\projects -Itemtype Directory 
-          New-Item .\AzDevOps\projects\en-us -Itemtype Directory
-          Copy-Item .\projects\projects.* .\AzDevOps\projects
-          Copy-Item .\projects\docs\en-us\* .\AzDevOps\projects\en-us
+          New-Item .\Staging\projects -Itemtype Directory 
+          New-Item .\Staging\projects\en-us -Itemtype Directory
+          Copy-Item .\projects\projects.* .\Staging\projects
+          Copy-Item .\projects\docs\en-us\* .\Staging\projects\en-us
         displayName: File Projects Copy
         name: ProjectsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
-          New-Item .\AzDevOps\teams -Itemtype Directory 
-          New-Item .\AzDevOps\teams\en-us -Itemtype Directory
-          Copy-Item .\teams\teams.* .\AzDevOps\teams
-          Copy-Item .\teams\docs\en-us\* .\AzDevOps\teams\en-us
-          Get-ChildItem .\AzDevOps -Recurse
+          New-Item .\Staging\teams -Itemtype Directory 
+          New-Item .\Staging\teams\en-us -Itemtype Directory
+          Copy-Item .\teams\teams.* .\Staging\teams
+          Copy-Item .\teams\docs\en-us\* .\Staging\teams\en-us
+          Get-ChildItem .\Staging -Recurse
         displayName: File Teams Copy
         name: TeamsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: | 
-          Set-Location .\AzDevOps
+          Set-Location .\Staging
           git status
         displayName: Git Status Check
         name: GitStatusCheck
