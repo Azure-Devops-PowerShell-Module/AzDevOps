@@ -54,9 +54,71 @@ stages:
           Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
           Copy-Item .\authentication\docs\en-us\* .\AzDevOps\authentication\en-us
           Get-ChildItem .\AzDevOps -Recurse
-        displayName: Say hello
-        name: firstStep
+        displayName: File Copy
+        name: FileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
-        env:
-          name: Microsoft
+    - job: SetupOperations
+      displayName: Setup Operations Module
+      timeoutInMinutes: 0
+      steps:
+      - checkout: self
+      - checkout: operations
+      - powershell: | 
+          New-Item .\AzDevOps\operations -Itemtype Directory 
+          New-Item .\AzDevOps\operations\en-us -Itemtype Directory
+          Copy-Item .\operations\operations.* .\AzDevOps\operations
+          Copy-Item .\operations\docs\en-us\* .\AzDevOps\operations\en-us
+          Get-ChildItem .\AzDevOps -Recurse
+        displayName: File Copy
+        name: FileCopy
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+    - job: SetupProcesses
+      displayName: Setup Processes Module
+      timeoutInMinutes: 0
+      steps:
+      - checkout: self
+      - checkout: processes
+      - powershell: | 
+          New-Item .\AzDevOps\processes -Itemtype Directory 
+          New-Item .\AzDevOps\processes\en-us -Itemtype Directory
+          Copy-Item .\processes\processes.* .\AzDevOps\processes
+          Copy-Item .\processes\docs\en-us\* .\AzDevOps\processes\en-us
+          Get-ChildItem .\AzDevOps -Recurse
+        displayName: File Copy
+        name: FileCopy
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+    - job: SetupProjects
+      displayName: Setup Projects Module
+      timeoutInMinutes: 0
+      steps:
+      - checkout: self
+      - checkout: projects
+      - powershell: | 
+          New-Item .\AzDevOps\projects -Itemtype Directory 
+          New-Item .\AzDevOps\projects\en-us -Itemtype Directory
+          Copy-Item .\projects\projects.* .\AzDevOps\projects
+          Copy-Item .\projects\docs\en-us\* .\AzDevOps\projects\en-us
+          Get-ChildItem .\AzDevOps -Recurse
+        displayName: File Copy
+        name: FileCopy
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+    - job: SetupTeams
+      displayName: Setup Teams Module
+      timeoutInMinutes: 0
+      steps:
+      - checkout: self
+      - checkout: teams
+      - powershell: | 
+          New-Item .\AzDevOps\teams -Itemtype Directory 
+          New-Item .\AzDevOps\projeteamscts\en-us -Itemtype Directory
+          Copy-Item .\teams\teams.* .\AzDevOps\teams
+          Copy-Item .\teams\docs\en-us\* .\AzDevOps\teams\en-us
+          Get-ChildItem .\AzDevOps -Recurse
+        displayName: File Copy
+        name: FileCopy
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
