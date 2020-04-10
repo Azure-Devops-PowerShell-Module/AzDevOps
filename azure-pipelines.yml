@@ -55,13 +55,6 @@ stages:
       - checkout: projects
       - checkout: teams
       - powershell: | 
-          #Set-Location .\AzDevOps
-          #git switch -c 'test'
-        displayName: Undo Detached Head
-        name: UndoDetachedHead
-        workingDirectory: $(build.sourcesDirectory)
-        failOnStderr: true
-      - powershell: | 
           Install-Module -Name psake -Scope CurrentUser -SkipPublisherCheck -Force
           Import-Module psake
         displayName: Install psake Module
@@ -112,5 +105,12 @@ stages:
           Get-ChildItem .\AzDevOps -Recurse
         displayName: File Teams Copy
         name: TeamsFileCopy
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+      - powershell: | 
+          Set-Location .\AzDevOps
+          git status
+        displayName: Undo Detached Head
+        name: UndoDetachedHead
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
