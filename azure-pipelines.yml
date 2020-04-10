@@ -12,7 +12,7 @@ pool:
 resources:
   repositories:
   - repository: authentication
-    type: git
+    type: github
     name: Azure-Devops-PowerShell-Module/authentication
     ref: refs/heads/master
 
