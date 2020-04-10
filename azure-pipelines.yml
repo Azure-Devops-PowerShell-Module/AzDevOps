@@ -54,7 +54,7 @@ stages:
       - checkout: teams
       - powershell: | 
           Set-Location .\AzDevOps
-          git switch -
+          git switch -c 'test'
         displayName: Undo Detached Head
         name: UndoDetachedHead
         workingDirectory: $(build.sourcesDirectory)
