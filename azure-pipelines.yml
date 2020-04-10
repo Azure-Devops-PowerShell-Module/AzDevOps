@@ -42,26 +42,29 @@ resources:
 stages:
   - stage: Build
     jobs:
+    - job: CloneStagingRepo
+      displayName: Clone Staging Repo
+      timeoutInMinutes: 0
+      steps:
+      - checkout: none 
+      - powershell: | 
+          git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git Staging
+          Set-Location .\Staging
+          git branch $(Tag) 
+        displayName: Git Clone Stagin
+        name: GitSwitchBRanch
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
     - job: SetupNestedModules
       displayName: Setup Nested Modules
       timeoutInMinutes: 0
       steps:
       - checkout: self
-        submodules: true
-        persistCredentials: true
       - checkout: authentication
       - checkout: operations
       - checkout: processes
       - checkout: projects
       - checkout: teams
-      - powershell: | 
-          git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git Staging
-          Set-Location .\Staging
-          git branch $(Tag) 
-        displayName: Git Switch Branch
-        name: GitSwitchBRanch
-        workingDirectory: $(build.sourcesDirectory)
-        failOnStderr: true
       - powershell: | 
           Install-Module -Name psake -Scope CurrentUser -SkipPublisherCheck -Force
           Import-Module psake
