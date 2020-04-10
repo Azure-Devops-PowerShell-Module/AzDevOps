@@ -40,19 +40,19 @@ resources:
     ref: refs/tags/$(Tag)
 
 stages:
--stage: Build
-  jobs:
-  - job: SetupAuthentication
-    displayName: Setup Authentication Module
-    timeoutInMinutes: 0
-    steps:
-    - checkout: self
-    - checkout: authentication
-    - powershell: | 
-        Get-ChildItem . -Recurse
-      displayName: Say hello
-      name: firstStep
-      workingDirectory: $(build.sourcesDirectory)
-      failOnStderr: true
-      env:
-        name: Microsoft
+  - stage: Build
+    jobs:
+    - job: SetupAuthentication
+      displayName: Setup Authentication Module
+      timeoutInMinutes: 0
+      steps:
+      - checkout: self
+      - checkout: authentication
+      - powershell: | 
+          Get-ChildItem . -Recurse
+        displayName: Say hello
+        name: firstStep
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+        env:
+          name: Microsoft
