@@ -58,7 +58,7 @@ stages:
           Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
           Copy-Item .\authentication\docs\en-us\* .\AzDevOps\authentication\en-us
         displayName: Authentication File Copy
-        name: FileCopy
+        name: AuthenticationFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
@@ -67,7 +67,7 @@ stages:
           Copy-Item .\operations\operations.* .\AzDevOps\operations
           Copy-Item .\operations\docs\en-us\* .\AzDevOps\operations\en-us
         displayName: Operations File Copy
-        name: FileCopy
+        name: OperationsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
@@ -76,7 +76,7 @@ stages:
           Copy-Item .\processes\processes.* .\AzDevOps\processes
           Copy-Item .\processes\docs\en-us\* .\AzDevOps\processes\en-us
         displayName: Processes File Copy
-        name: FileCopy
+        name: ProcessesFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
@@ -85,7 +85,7 @@ stages:
           Copy-Item .\projects\projects.* .\AzDevOps\projects
           Copy-Item .\projects\docs\en-us\* .\AzDevOps\projects\en-us
         displayName: File Projects Copy
-        name: FileCopy
+        name: ProjectsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
       - powershell: |
@@ -95,6 +95,6 @@ stages:
           Copy-Item .\teams\docs\en-us\* .\AzDevOps\teams\en-us
           Get-ChildItem .\AzDevOps -Recurse
         displayName: File Teams Copy
-        name: FileCopy
+        name: TeamsFileCopy
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
