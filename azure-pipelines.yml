@@ -49,7 +49,10 @@ stages:
       - checkout: self
       - checkout: authentication
       - powershell: | 
-          Get-ChildItem . -Recurse
+          New-Item .\AzDevOps\authentication -Itemtype Directory 
+          New-Item .\AzDevOps\authentication\en-us -Itemtype Directory
+          Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
+          Copy-Item .\authentication\docs\en-us\* .\AzDevOps\authentication\en-us
         displayName: Say hello
         name: firstStep
         workingDirectory: $(build.sourcesDirectory)
