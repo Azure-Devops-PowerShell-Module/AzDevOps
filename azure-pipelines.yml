@@ -53,6 +53,20 @@ stages:
       - checkout: projects
       - checkout: teams
       - powershell: | 
+          Set-Location .\AzDevOps
+          git switch -
+        displayName: Undo Detached Head
+        name: UndoDetachedHead
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+      - powershell: | 
+          Install-Module -Name psake -Scope CurrentUser -SkipPublisherCheck -Force
+          Import-Module psake
+        displayName: Install psake Module
+        name: InstallPsake
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+      - powershell: | 
           New-Item .\AzDevOps\authentication -Itemtype Directory 
           New-Item .\AzDevOps\authentication\en-us -Itemtype Directory
           Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
