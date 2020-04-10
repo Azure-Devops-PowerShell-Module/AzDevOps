@@ -40,21 +40,23 @@ resources:
     ref: refs/tags/$(Tag)
 
 stages:
+  - stage: SetupStaging
+    jobs:
+      - job: CloneStagingRepo
+        displayName: Clone Staging Repo
+        timeoutInMinutes: 0
+        steps:
+        - checkout: none 
+        - powershell: | 
+            git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git Staging
+            Set-Location .\Staging
+            git branch $(Tag) 
+          displayName: Git Clone Staging
+          name: GitSwitchBRanch
+          workingDirectory: $(build.sourcesDirectory)
+          failOnStderr: true
   - stage: Build
     jobs:
-    - job: CloneStagingRepo
-      displayName: Clone Staging Repo
-      timeoutInMinutes: 0
-      steps:
-      - checkout: none 
-      - powershell: | 
-          git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git Staging
-          Set-Location .\Staging
-          git branch $(Tag) 
-        displayName: Git Clone Stagin
-        name: GitSwitchBRanch
-        workingDirectory: $(build.sourcesDirectory)
-        failOnStderr: true
     - job: SetupNestedModules
       displayName: Setup Nested Modules
       timeoutInMinutes: 0
