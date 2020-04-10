@@ -18,13 +18,41 @@ resources:
     name: Azure-Devops-PowerShell-Module/authentication
     endpoint: Azure-Devops-PowerShell-Module
     ref: refs/tags/$(Tag)
+  - repository: operations
+    type: github
+    name: Azure-Devops-PowerShell-Module/operations
+    endpoint: Azure-Devops-PowerShell-Module
+    ref: refs/tags/$(Tag)
+  - repository: processes
+    type: github
+    name: Azure-Devops-PowerShell-Module/processes
+    endpoint: Azure-Devops-PowerShell-Module
+    ref: refs/tags/$(Tag)
+  - repository: projects
+    type: github
+    name: Azure-Devops-PowerShell-Module/projects
+    endpoint: Azure-Devops-PowerShell-Module
+    ref: refs/tags/$(Tag)
+  - repository: teams
+    type: github
+    name: Azure-Devops-PowerShell-Module/teams
+    endpoint: Azure-Devops-PowerShell-Module
+    ref: refs/tags/$(Tag)
 
-
-steps:
-- powershell: Get-ChildItem . -Recurse
-  displayName: Say hello
-  name: firstStep
-  workingDirectory: $(build.sourcesDirectory)
-  failOnStderr: true
-  env:
-    name: Microsoft
+stages:
+-stage: Build
+  jobs:
+  - job: SetupAuthentication
+    displayName: Setup Authentication Module
+    timeoutInMinutes: 0
+    steps:
+    - checkout: self
+    - checkout: authentication
+    - powershell: | 
+        Get-ChildItem . -Recurse
+      displayName: Say hello
+      name: firstStep
+      workingDirectory: $(build.sourcesDirectory)
+      failOnStderr: true
+      env:
+        name: Microsoft
