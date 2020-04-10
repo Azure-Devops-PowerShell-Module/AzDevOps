@@ -57,7 +57,7 @@ stages:
       - powershell: | 
           Set-Location .\AzDevOps
           git branch test
-          git checkout test
+          git switch -c test
         displayName: Git Switch Branch
         name: GitSwitchBRanch
         workingDirectory: $(build.sourcesDirectory)
