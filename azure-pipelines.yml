@@ -47,14 +47,16 @@ stages:
       timeoutInMinutes: 0
       steps:
       - checkout: self
+        submodules: true
+        persistCredentials: true
       - checkout: authentication
       - checkout: operations
       - checkout: processes
       - checkout: projects
       - checkout: teams
       - powershell: | 
-          Set-Location .\AzDevOps
-          git switch -c 'test'
+          #Set-Location .\AzDevOps
+          #git switch -c 'test'
         displayName: Undo Detached Head
         name: UndoDetachedHead
         workingDirectory: $(build.sourcesDirectory)
