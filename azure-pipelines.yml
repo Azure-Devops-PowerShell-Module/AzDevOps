@@ -53,6 +53,7 @@ stages:
           New-Item .\AzDevOps\authentication\en-us -Itemtype Directory
           Copy-Item .\authentication\authentication.* .\AzDevOps\authentication
           Copy-Item .\authentication\docs\en-us\* .\AzDevOps\authentication\en-us
+          Get-ChildItem .\AzDevOps -Recurse
         displayName: Say hello
         name: firstStep
         workingDirectory: $(build.sourcesDirectory)
