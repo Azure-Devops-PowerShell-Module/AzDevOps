@@ -13,9 +13,9 @@ Task UpdateReadme {
 
   if (!(Get-Module -Name $moduleName )) {Import-Module -Name ".\$($moduleName).psd1" }
 
-  Write-Output "| Azure Pipelines | Test Status |" |Out-File $readMe.FullName -Force 
-  Write-Output "|-----------------|----------------|" |Out-File $readMe.FullName -Append
-  Write-Output "![Azure Pipelines Build Status](https://img.shields.io/azure-devops/build/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5) | ![Azure Build Test Results](https://img.shields.io/azure-devops/tests/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5)" |Out-File $readMe.FullName -Append 
+  Write-Output "| Latest Version | Azure Pipelines | Test Status |" |Out-File $readMe.FullName -Force 
+  Write-Output "|-----------------|-----------------|----------------|" |Out-File $readMe.FullName -Append
+  Write-Output "![Latest Version](https://img.shields.io/github/v/tag/Azure-Devops-PowerShell-Module/AzDevOps) | ![Azure Pipelines Build Status](https://img.shields.io/azure-devops/build/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5) | ![Azure Build Test Results](https://img.shields.io/azure-devops/tests/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5)" |Out-File $readMe.FullName -Append 
   Write-Output "" |Out-File $readMe.FullName -Append
   Write-Output (Invoke-WebRequest -UseBasicParsing -Uri https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/wiki/Home.md |Select-Object -ExpandProperty Content) |Out-File $readMe.FullName -Append
   Write-Output "" |Out-File $readMe.FullName -Append
