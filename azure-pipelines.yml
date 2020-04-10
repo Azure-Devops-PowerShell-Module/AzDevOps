@@ -55,9 +55,8 @@ stages:
       - checkout: projects
       - checkout: teams
       - powershell: | 
-          New-Item Staging -Itemtype Directory
+          git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git Staging
           Set-Location .\Staging
-          git clone https://github.com/Azure-Devops-PowerShell-Module/AzDevOps.git
           git branch $(Tag) 
           git checkout $(Tag)
         displayName: Git Switch Branch
