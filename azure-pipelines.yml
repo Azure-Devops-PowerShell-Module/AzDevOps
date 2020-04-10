@@ -55,6 +55,13 @@ stages:
       - checkout: projects
       - checkout: teams
       - powershell: | 
+          Set-Location .\AzDevOps
+          git switch test
+        displayName: Git Switch Branch
+        name: GitSwitchBRanch
+        workingDirectory: $(build.sourcesDirectory)
+        failOnStderr: true
+      - powershell: | 
           Install-Module -Name psake -Scope CurrentUser -SkipPublisherCheck -Force
           Import-Module psake
         displayName: Install psake Module
@@ -110,7 +117,7 @@ stages:
       - powershell: | 
           Set-Location .\AzDevOps
           git status
-        displayName: Undo Detached Head
-        name: UndoDetachedHead
+        displayName: Git Status Check
+        name: GitStatusCheck
         workingDirectory: $(build.sourcesDirectory)
         failOnStderr: true
