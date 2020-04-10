@@ -114,7 +114,7 @@ stages:
       - checkout: teams
       - powershell: | 
           New-Item .\AzDevOps\teams -Itemtype Directory 
-          New-Item .\AzDevOps\projeteamscts\en-us -Itemtype Directory
+          New-Item .\AzDevOps\teams\en-us -Itemtype Directory
           Copy-Item .\teams\teams.* .\AzDevOps\teams
           Copy-Item .\teams\docs\en-us\* .\AzDevOps\teams\en-us
           Get-ChildItem .\AzDevOps -Recurse
