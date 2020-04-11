@@ -4,7 +4,7 @@ Task ModulesToExport {
   $NestedModules = Get-ChildItem -Attributes Directory |ForEach-Object {if(Get-Item "$($_.FullName)\$($_.Name).psd1"){Write-Output "$($_.Basename)\$($_.BaseName).psd1"}}
   Update-ModuleManifest -Path .\AzDevOps.psd1 -NestedModules $NestedModules
   Update-ModuleManifest -Path .\AzDevOps.psd1 -ModuleList $NestedModules
-  Update-ModuleManifest -Path D:\CODE\projects\Azure-Devops-PowerShell-Module\AzDevOps\AzDevOps.psd1 -FunctionsToExport '*'
+  Update-ModuleManifest -Path .\AzDevOps.psd1 -FunctionsToExport '*'
 }
 
 Task UpdateReadme {
