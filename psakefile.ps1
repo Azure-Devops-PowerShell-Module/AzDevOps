@@ -9,6 +9,7 @@ Task ModulesToExport {
 
 Task UpdateReadme {
   $moduleName = Get-Item . | ForEach-Object BaseName
+  if ($moduleName -eq 'Staging') {$moduleName = 'AzDevOps'}
   $readMe = Get-Item README.md
 
   if (!(Get-Module -Name $moduleName )) {Import-Module -Name ".\$($moduleName).psd1" }
