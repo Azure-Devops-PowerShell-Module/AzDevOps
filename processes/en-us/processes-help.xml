@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems schema="maml" xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-AzDevOpsProcess</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>AzDevOpsProcess</command:noun>
+      <maml:description>
+        <maml:para>Get one or more available rpocesses</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This function will return one or more Processes from Azure DevOps.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-AzDevOpsProcess</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>ProcessId</maml:name>
+          <maml:Description>
+            <maml:para>The Process ID</maml:para>
+          </maml:Description>
+          <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+          <dev:type>
+            <maml:name>Guid</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>ProcessId</maml:name>
+        <maml:Description>
+          <maml:para>The Process ID</maml:para>
+        </maml:Description>
+        <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+        <dev:type>
+          <maml:name>Guid</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-AzDevOpsProcess
+
+
+id          : 27450541-8e31-4150-9947-dc59f998fc01
+description : This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.
+isDefault   : False
+type        : system
+url         : https://dev.azure.com/patton-tech/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01
+name        : CMMI
+
+id          : 6b724908-ef14-45cf-84f8-768b5384da45
+description : This template is for teams who follow the Scrum framework.
+isDefault   : False
+type        : system
+url         : https://dev.azure.com/patton-tech/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45
+name        : Scrum
+
+id          : adcc42ab-9882-485e-a3ed-7678f01f66bc
+description : This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.
+isDefault   : True
+type        : system
+url         : https://dev.azure.com/patton-tech/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc
+name        : Agile
+
+id          : b8a3a935-7e91-48b8-a94c-606d37c3e9f2
+description : This template is flexible for any process and great for teams getting started with Azure DevOps.
+isDefault   : False
+type        : system
+url         : https://dev.azure.com/patton-tech/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2
+name        : Basic</dev:code>
+        <dev:remarks>
+          <maml:para>Get a list of all processes</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-AzDevOpsProcess -ProcessId 27450541-8e31-4150-9947-dc59f998fc01
+
+
+id          : 27450541-8e31-4150-9947-dc59f998fc01
+description : This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.
+isDefault   : False
+_links      : @{self=}
+type        : system
+url         : https://dev.azure.com/patton-tech/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01
+name        : CMMI</dev:code>
+        <dev:remarks>
+          <maml:para>Get a specific process</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Azure-Devops-PowerShell-Module/processes/blob/master/docs/Get-AzDevOpsProcess.md#get-azdevopsprocess</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Connect-AzDevOpsOrganization</maml:linkText>
+        <maml:uri>https://github.com/Azure-Devops-PowerShell-Module/authentication/blob/master/docs/Connect-AzDevOpsOrganization.md#connect-azdevopsorganization</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+</helpItems>
