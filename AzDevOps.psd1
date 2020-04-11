@@ -30,7 +30,7 @@
   Copyright         = '04/10/2020 13:05:31'
 
   # Description of the functionality provided by this module
-  # Description = ''
+  Description = 'A PowerShell Module for working with and managing Azure Devops'
 
   # Minimum version of the Windows PowerShell engine required by this module
   # PowerShellVersion = ''
