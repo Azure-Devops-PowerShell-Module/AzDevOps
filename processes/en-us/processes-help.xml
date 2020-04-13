@@ -6,7 +6,7 @@
       <command:verb>Get</command:verb>
       <command:noun>AzDevOpsProcess</command:noun>
       <maml:description>
-        <maml:para>Get one or more available rpocesses</maml:para>
+        <maml:para>Get one or more available processes</maml:para>
       </maml:description>
     </command:details>
     <maml:description>

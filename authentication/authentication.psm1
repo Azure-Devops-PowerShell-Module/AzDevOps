@@ -1,3 +1,4 @@
+# .ExternalHelp authentication-help.xml
 function Connect-Organization {
   [CmdletBinding(
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/authentication/blob/master/docs/Connect-AzDevOpsOrganization.md#connect-azdevopsOrganization',

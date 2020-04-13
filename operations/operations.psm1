@@ -1,3 +1,4 @@
+# .ExternalHelp operations-help.xml
 function Get-Operation {
   [CmdletBinding(
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/operations/blob/master/docs/Get-AzDevOpsOperation.md#get-azdevopsoperation',
