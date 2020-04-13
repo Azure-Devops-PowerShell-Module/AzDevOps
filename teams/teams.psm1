@@ -1,3 +1,4 @@
+# .ExternalHelp teams-help.xml
 function Get-Team {
   [CmdletBinding(
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Get-AzDevOpsTeam.md#get-azdevopsteam',
@@ -16,7 +17,7 @@ function Get-Team {
   process {
     $ErrorActionPreference = 'Stop'
     $Error.Clear()
-  
+
     try {
       #
       # Are we connected
@@ -26,7 +27,7 @@ function Get-Team {
           'Project' {
             if ($TeamId) {
               $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/$($TeamId)?api-version=5.1"
-              return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)  
+              return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)
             }
             else {
               $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/?api-version=5.1"
@@ -37,7 +38,7 @@ function Get-Team {
             $Project = Get-AzDevOpsProject -ProjectId $ProjectId
             if ($TeamId) {
               $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/$($TeamId)?api-version=5.1"
-              return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)  
+              return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)
             }
             else {
               $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/?api-version=5.1"
@@ -46,7 +47,7 @@ function Get-Team {
           }
           default {
             $uriTeam = $Global:azDevOpsOrg + "_apis/teams?api-version=5.1-preview.3"
-            (Invoke-RestMethod -Uri $uriTeam -Method get -Headers $Global:azDevOpsHeader).Value  
+            (Invoke-RestMethod -Uri $uriTeam -Method get -Headers $Global:azDevOpsHeader).Value
           }
         }
       }
@@ -58,19 +59,19 @@ function Get-Team {
             [System.Management.Automation.ErrorCategory]::OpenError,
             $MyObject
           )
-        )  
+        )
       }
     }
     catch {
       throw $_
-    }  
+    }
   }
 }
 function New-Team {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/New-AzDevOpsTeam.md#new-azdevopsteam',
     PositionalBinding = $true)]
-  [OutputType([Object])]    
+  [OutputType([Object])]
   param (
     [Parameter(Mandatory = $true)]
     [string]$Name,
@@ -83,7 +84,7 @@ function New-Team {
   process {
     $ErrorActionPreference = 'Stop'
     $Error.Clear()
-  
+
     try {
       #
       # Are we connected
@@ -93,7 +94,7 @@ function New-Team {
           "name"        = $Name
           "description" = $Description
         } | ConvertTo-Json -Depth 5
-  
+
         $uriTeam = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/?api-version=5.1"
         if ($PSCmdlet.ShouldProcess("Create", "Create new team in $($Project.name) Azure Devops Projects")) {
           return Invoke-RestMethod -Uri $uriTeam -Method Post -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
@@ -107,12 +108,12 @@ function New-Team {
             [System.Management.Automation.ErrorCategory]::OpenError,
             $MyObject
           )
-        )  
+        )
       }
     }
     catch {
       throw $_
-    }  
+    }
   }
 }
 function Remove-Team {
@@ -143,7 +144,7 @@ function Remove-Team {
         $Result = Invoke-RestMethod -Uri $uriProjects -Method Delete -Headers $Global:azDevOpsHeader
         if (!($Result)) {
           return "Team : $($Team.id) removed from Project : $($Project.id)"
-        }  
+        }
       }
     }
     else {
@@ -154,7 +155,7 @@ function Remove-Team {
           [System.Management.Automation.ErrorCategory]::OpenError,
           $MyObject
         )
-      )  
+      )
     }
   }
   catch {
@@ -165,7 +166,7 @@ function Update-Team {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Update-AzDevOpsTeam.md#update-azdevopsteam',
     PositionalBinding = $true)]
-  [OutputType([Object])]    
+  [OutputType([Object])]
   param (
     [Parameter(Mandatory = $false)]
     [string]$Name,
@@ -178,7 +179,7 @@ function Update-Team {
   process {
     $ErrorActionPreference = 'Stop'
     $Error.Clear()
-  
+
     try {
       #
       # Are we connected
@@ -188,7 +189,7 @@ function Update-Team {
           "name"        = $Name
           "description" = $Description
         } | ConvertTo-Json -Depth 5
-  
+
         $uriTeam = $Global:azDevOpsOrg + "_apis/projects/$($Team.projectid)/teams/$($Team.id)?api-version=5.1"
         if ($PSCmdlet.ShouldProcess("Update", "Update new team in $($Project.name) Azure Devops Projects")) {
           return Invoke-RestMethod -Uri $uriTeam -Method Patch -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
@@ -202,12 +203,12 @@ function Update-Team {
             [System.Management.Automation.ErrorCategory]::OpenError,
             $MyObject
           )
-        )  
+        )
       }
     }
     catch {
       throw $_
-    }  
+    }
   }
 }
 function Get-TeamMember {
@@ -245,7 +246,7 @@ function Get-TeamMember {
               foreach ($Team in Get-AzDevOpsTeam -ProjectId $Project.Id) {
                 $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/$($Team.id)/members?api-version=5.1"
                 (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader).Value | Select-Object -ExpandProperty Identity
-              }                  
+              }
             }
           }
           'ProjectId' {
@@ -259,7 +260,7 @@ function Get-TeamMember {
               foreach ($Team in Get-AzDevOpsTeam -ProjectId $Project.Id) {
                 $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.Id)/teams/$($Team.id)/members?api-version=5.1"
                 (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader).Value | Select-Object -ExpandProperty Identity
-              }                  
+              }
             }
           }
         }
@@ -272,12 +273,11 @@ function Get-TeamMember {
             [System.Management.Automation.ErrorCategory]::OpenError,
             $MyObject
           )
-        )  
+        )
       }
     }
     catch {
       throw $_
-    }  
-  
+    }
   }
 }

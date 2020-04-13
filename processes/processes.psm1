@@ -1,3 +1,4 @@
+# .ExternalHelp processes-help.xml
 function Get-Process {
   [CmdletBinding(
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/processes/blob/master/docs/Get-AzDevOpsProcess.md#get-azdevopsprocess',

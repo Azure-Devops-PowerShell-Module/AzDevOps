@@ -1,3 +1,4 @@
+# .ExternalHelp projects-help.xml
 function Get-Project {
   [CmdletBinding(
     HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Get-AzDevOpsProject.md#get-azdevopsproject',
