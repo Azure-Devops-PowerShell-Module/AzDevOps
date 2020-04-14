@@ -84,11 +84,7 @@ AliasesToExport = @()
 # DscResourcesToExport = @()
 
 # List of all modules packaged with this module
-ModuleList = @('authentication\authentication.psd1', 
-               'operations\operations.psd1', 
-               'processes\processes.psd1', 
-               'projects\projects.psd1', 
-               'teams\teams.psd1')
+ModuleList = @()
 
 # List of all files packaged with this module
 # FileList = @()
@@ -108,10 +104,10 @@ PrivateData = @{
         ProjectUri = 'https://github.com/Azure-Devops-PowerShell-Module'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/logo.png?raw=true'
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/CHANGELOG.md'
 
         # Prerelease string of this module
         # Prerelease = ''
