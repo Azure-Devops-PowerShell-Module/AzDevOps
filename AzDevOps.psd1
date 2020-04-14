@@ -12,7 +12,7 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '1.0.1'
+ModuleVersion = '1.0.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -66,11 +66,7 @@ Description = 'A PowerShell Module for working with and managing Azure Devops'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @('authentication\authentication.psd1', 
-               'operations\operations.psd1', 
-               'processes\processes.psd1', 
-               'projects\projects.psd1', 
-               'teams\teams.psd1')
+NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = '*'
