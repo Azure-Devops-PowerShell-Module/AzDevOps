@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 - oAuth2 Authentication Method
-- Rolling up v1.0.0 modules to one 'Core' module
 - Pester Tests
 - Build module
+
+## [1.0.2] - 2020-04-14
+### Added
+- Migrated original nested modules into core module
+- Fixed Update-AzDevOpsProject that had been removed
+- Added About_AzDevOps help
+### Changed
+- psake to skip processing docs and en-us folders
+### Removed
+- NestedModules and their repositories
 
 ## [1.0.1] - 2020-04-13
 ### Added
