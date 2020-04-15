@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pester Tests
 - Build module
 
+## [1.1.0] - 2020-04-15
+### Added
+- Created build repository
+- Incremented module version to 1.1.0
+
 ## [1.0.2] - 2020-04-14
 ### Added
 - Migrated original nested modules into core module
