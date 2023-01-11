@@ -1,24 +1,72 @@
-Task default -depends ModulesToExport
+$script:ModuleName = 'AzDevOps';
+$script:Source = Join-Path $PSScriptRoot $ModuleName;
+$script:Output = Join-Path $PSScriptRoot output;
+$script:Destination = Join-Path $Output $ModuleName;
+$script:Assemblies = Join-Path $Destination assemblies;
+$script:ModulePath = "$Destination\$ModuleName.psm1";
+$script:ManifestPath = "$Destination\$ModuleName.psd1";
+$script:Imports = ('public', 'authentication\public', 'authentication\private', 'build\public', 'build\private', 'operations\public', 'operations\private', 'processes\public', 'processes\private', 'projects\public', 'projects\private', 'teams\public', 'teams\private');
+$script:PublicFunctions = ('authentication\public', 'build\public', 'operations\public', 'processes\public', 'projects\public', 'teams\public');
+$script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
+$script:SourceId = [System.Guid]::NewGuid().Guid;
 
-Task ModulesToExport {
-  $NestedModules = Get-ChildItem -Attributes Directory -Exclude docs,en-us |ForEach-Object {if(Get-Item "$($_.FullName)\$($_.Name).psd1"){Write-Output "$($_.Basename)\$($_.BaseName).psd1"}}
-  Update-ModuleManifest -Path .\AzDevOps.psd1 -NestedModules $NestedModules
-  Update-ModuleManifest -Path .\AzDevOps.psd1 -ModuleList $NestedModules
-  Update-ModuleManifest -Path .\AzDevOps.psd1 -FunctionsToExport '*'
+Import-Module BuildHelpers;
+
+<#
+Write-Output $script:ModuleName
+Write-Output $script:Source
+Write-Output $script:Output
+Write-Output $script:ModulePath
+Write-Output $script:ManifestPath
+Write-Output $script:Imports
+Write-Output $script:PublicFunctions
+Write-Output $script:TestFile
+#>
+
+Task LocalUse -description "Use for local testing" -depends Clean, BuildModule, BuildManifest
+Task CIUSe -description "Use for pipeline deployments" -depends BuildModule, BuildManifest
+
+Task Clean {
+  $null = Remove-Item $Output -Recurse -ErrorAction Ignore
+  $null = New-Item -Type Directory -Path $Destination
 }
 
-Task UpdateReadme {
-  $moduleName = Get-Item . | ForEach-Object BaseName
-  if ($moduleName -eq 'Staging') {$moduleName = 'AzDevOps'}
-  $readMe = Get-Item README.md
+Task BuildModule -description "Compile the Build Module" -action {
+  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
+  foreach ($folder in $imports ) {
+    [void]$stringbuilder.AppendLine( "Write-Verbose 'Importing from [$Source\$folder]'" )
+    if (Test-Path "$source\$folder") {
+      $fileList = Get-ChildItem "$source\$folder\*.ps1" -Exclude "*.Tests.ps1"
+      foreach ($file in $fileList) {
+        $shortName = $file.BaseName
+        Write-Output "  Importing [.$shortName]"
+        [void]$stringbuilder.AppendLine( "# .$shortName" )
+        [void]$stringbuilder.AppendLine( [System.IO.File]::ReadAllText($file.fullname) )
+      }
+    }
+  }
+  Write-Output "  Creating module [$ModulePath]"
+  Set-Content -Path  $ModulePath -Value $stringbuilder.ToString()
+}
 
-  if (!(Get-Module -Name $moduleName )) {Import-Module -Name ".\$($moduleName).psd1" }
+Task BuildManifest -description "Compile the Module Manifest" -depends BuildModule -action {
+  Write-Output "  Update [$ManifestPath]"
+  Copy-Item "$Source\$ModuleName.psd1" -Destination $ManifestPath
+  $Functions = @()
+  foreach ($Folder in $PublicFunctions) {
+    if (Test-Path "$Source\$Folder") {
+      $FileList = Get-ChildItem "$($Source)\$($Folder.Replace('public',''))*.psd1"
+      foreach ($File in $FileList) {
+        $Functions += Get-Metadata -Path $File.FullName -PropertyName FunctionsToExport
+      }
+    }
+  }
+  Update-Metadata -Path $ManifestPath -PropertyName FunctionsToExport -Value $Functions
+}
 
-  Write-Output "| Latest Version | Azure Pipelines | Test Status | PowerShell Gallery | Github Release |" |Out-File $readMe.FullName -Force 
-  Write-Output "|-----------------|-----------------|----------------|----------------|----------------|" |Out-File $readMe.FullName -Append
-  Write-Output "![Latest Version](https://img.shields.io/github/v/tag/Azure-Devops-PowerShell-Module/AzDevOps) | ![Azure Pipelines Build Status](https://img.shields.io/azure-devops/build/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5) | ![Azure Build Test Results](https://img.shields.io/azure-devops/tests/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/5) | ![Powershell Gallery](https://img.shields.io/powershellgallery/dt/AzDevOps) | ![Github Release](https://img.shields.io/github/downloads/Azure-Devops-PowerShell-Module/AzDevOps/total)" |Out-File $readMe.FullName -Append 
-  Write-Output "" |Out-File $readMe.FullName -Append
-  Write-Output (Invoke-WebRequest -UseBasicParsing -Uri https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/wiki/Home.md |Select-Object -ExpandProperty Content) |Out-File $readMe.FullName -Append
-  Write-Output "" |Out-File $readMe.FullName -Append
-  Get-Command -Module $moduleName |Sort-Object -Property Noun,Verb |ForEach-Object {Write-Output "## [$($_.Name)](docs/$($_.Name).md)";Write-Output '```';Get-Help $_.Name;Write-Output '```'} |Out-File $readMe.FullName -Append
+Task PesterTest -description "Test module" -action {
+  $TestResults = Invoke-Pester -OutputFormat NUnitXml -OutputFile $TestFile
+  if ($TestResults.FailedCount -gt 0) {
+    Write-Error "Failed [$($TestResults.FailedCount)] Pester tests"
+  }
 }
