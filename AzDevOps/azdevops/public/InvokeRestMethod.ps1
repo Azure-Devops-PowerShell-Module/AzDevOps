@@ -5,7 +5,7 @@ function Invoke-RestMethod
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
-  [Parameter(Mandator = $true)]
+  [Parameter(Mandatory = $true)]
   [System.Uri]$Uri,
   [Parameter(Mandatory = $true)]
   [validateset('GET','POST')]
