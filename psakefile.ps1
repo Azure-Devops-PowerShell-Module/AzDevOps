@@ -71,7 +71,7 @@ Task BuildManifest -description "Compile the Module Manifest" -depends BuildModu
  Update-Metadata -Path $ManifestPath -PropertyName FunctionsToExport -Value $Functions
 }
 
-Task BuildCoreModule -description "Build the Core Module" -action {
+Task BuildNestedModules -description "Build the nested modules" -action {
  foreach ($ModuleName in $script:ModuleList)
  {
   $ModuleFolder = (Get-Item -Path "$($script:Source)\$($ModuleName)").FullName;
@@ -100,6 +100,33 @@ Task BuildCoreModule -description "Build the Core Module" -action {
   }
   Write-Output "  Creating module [$($ModulePath)]";
   Set-Content -Path  $ModulePath -Value $stringbuilder.ToString();
+ }
+}
+
+Task BuildNestedManifests -description "Build the nested module manifest files" -action {
+ foreach ($ModuleName in $script:ModuleList)
+ {
+  $ModuleFolder = (Get-Item -Path "$($script:Source)\$($ModuleName)").FullName;
+  $ModuleDestination = Join-Path $script:Output $script:ModuleName $ModuleName;
+  $CurrentManifestPath = "$($ModuleFolder)\$($ModuleName).psd1"
+  $ManifestPath = Join-Path $ModuleDestination "$($ModuleName).psd1";
+  Write-Output "  Update [$ManifestPath]";
+  $Functions = @();
+  foreach ($Folder in (Get-ChildItem -Path $ModuleFolder -Directory))
+  {
+   if (Test-Path -Path $Folder.FullName)
+   {
+    $FileList = Get-ChildItem -Recurse -Path $Folder.FullName -Filter "*.ps1" -Exclude "*.Tests.ps1";
+    foreach ($File in $FileList)
+    {
+     $AST = [System.Management.Automation.Language.Parser]::ParseFile($File.FullName, [ref]$null, [ref]$null);
+     $Name = $AST.FindAll({$args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst]},$true).Name
+     $Functions += $Name;
+    }
+   }
+   Update-Metadata -Path $CurrentManifestPath -PropertyName FunctionsToExport -Value $Functions
+  }
+  Copy-Item $CurrentManifestPath -Destination $ManifestPath;
  }
 }
 
