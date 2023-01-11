@@ -10,7 +10,10 @@ function Get-Build {
       [Guid]$ProjectId,
       [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
       [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-      [int]$BuildId
+      [int]$BuildId,
+      [Parameter(Mandatory = $false)]
+      [ValidateSet('5.1','7.1-preview.7')]
+      [string]$ApiVersion = '7.1-preview.7'
     )
   
     $ErrorActionPreference = 'Stop'
@@ -23,15 +26,15 @@ function Get-Build {
       if ($Global:azDevOpsConnected) {
         switch ($PSCmdlet.ParameterSetName) {
           'Project' {
-            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=5.1"
+            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)"
           }
           'ProjectId' {
             $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=5.1"
+            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)"
           }
         }
         if ($BuildId) {
-          $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($BuildId)?api-version=5.1"
+          $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($BuildId)?api-version=$($ApiVersion)"
           return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)
         }
         else {

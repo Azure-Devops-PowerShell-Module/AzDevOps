@@ -10,7 +10,10 @@ function Get-BuildFolder {
       [Guid]$ProjectId,
       [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
       [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-      [string]$Path
+      [string]$Path,
+      [Parameter(Mandatory = $false)]
+      [ValidateSet('5.1-preview.2','7.1-preview.2')]
+      [string]$ApiVersion = '7.1-preview.2'
     )
   
     process {
@@ -30,10 +33,10 @@ function Get-BuildFolder {
             }
           }
           if ($Path) {
-            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=5.1-preview.2&path=$($Path.Replace('\','/'))"
+            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)&path=$($Path.Replace('\','/'))"
           }
           else {
-            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=5.1-preview.2"
+            $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)"
           }
           Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader | Select-Object -ExpandProperty Value
         }

@@ -7,13 +7,16 @@ function Connect-Organization {
       [Parameter(Mandatory = $true)]
       [string]$Orgname,
       [Parameter(Mandatory = $true)]
-      [string]$PAT
+      [string]$PAT,
+      [Parameter(Mandatory = $false)]
+      [ValidateSet('5.1','7.1-preview.4')]
+      [string]$ApiVersion = '7.1-preview.4'
     )
   
     $azDevOpsHeader = @{Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($PAT)")) }
     $azDevOpsOrg = "https://dev.azure.com/$($Orgname)/"
   
-    $uriProjects = $azDevOpsOrg + "_apis/projects?api-version=5.1"
+    $uriProjects = $azDevOpsOrg + "_apis/projects?api-version=$($ApiVersion)"
     $Result = Invoke-RestMethod -Uri $uriProjects -Method get -Headers $azDevOpsHeader
     if ($Result.GetType().Name -ne 'String') {
       Set-Variable -Name azDevOpsHeader -Value $azDevOpsHeader -Scope Global
