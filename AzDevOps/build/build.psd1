@@ -9,10 +9,10 @@
 @{
 
  # Script module or binary module file associated with this manifest.
- RootModule           = '.\build.psm1'
+ RootModule           = 'build.psm1'
 
  # Version number of this module.
- ModuleVersion        = '1.0.0'
+ ModuleVersion        = '2.0.0'
 
  # Supported PSEditions
  # CompatiblePSEditions = @()
@@ -69,10 +69,7 @@
  # NestedModules = @()
 
  # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
- FunctionsToExport    = 'Get-Build', 'Remove-Build', 'Start-Build', 'Get-BuildLog',
- 'Get-BuildDefinition', 'Get-BuildFolder', 'New-BuildFolder',
- 'Remove-BuildFolder'
-
+ FunctionsToExport = @('Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder')
  # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
  CmdletsToExport      = @()
 
@@ -122,6 +119,6 @@
  # HelpInfoURI = ''
 
  # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
- DefaultCommandPrefix = 'AzDevOps'
+ DefaultCommandPrefix = 'Ado'
 
 }
