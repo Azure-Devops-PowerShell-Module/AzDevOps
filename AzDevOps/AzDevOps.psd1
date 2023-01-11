@@ -9,10 +9,10 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-# RootModule = ''
+RootModule = 'AzDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.1.0'
+ModuleVersion = '2.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -66,7 +66,7 @@ Description = 'A PowerShell Module for working with and managing Azure Devops'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
+# NestedModules = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = '*'
@@ -84,7 +84,7 @@ AliasesToExport = @()
 # DscResourcesToExport = @()
 
 # List of all modules packaged with this module
-ModuleList = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
+# ModuleList = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
 
 # List of all files packaged with this module
 # FileList = @()
@@ -126,7 +126,7 @@ PrivateData = @{
 HelpInfoURI = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/wiki'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-# DefaultCommandPrefix = ''
+DefaultCommandPrefix = 'Ado'
 
 }
 
