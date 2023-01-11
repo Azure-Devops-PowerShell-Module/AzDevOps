@@ -1,4 +1,5 @@
 {
+ "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
  "powershell.codeFormatting.addWhitespaceAroundPipe": true,
  "powershell.codeFormatting.openBraceOnSameLine": false,
  "powershell.codeFormatting.newLineAfterOpenBrace": true,
