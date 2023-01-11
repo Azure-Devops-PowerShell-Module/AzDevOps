@@ -2,6 +2,7 @@ $script:ModuleName = 'AzDevOps';
 $script:Source = Join-Path $PSScriptRoot $ModuleName;
 $script:Output = Join-Path $PSScriptRoot output;
 $script:Destination = Join-Path $Output $ModuleName;
+$script:ModuleList = @('core','build','operations')
 $script:Assemblies = Join-Path $Destination assemblies;
 $script:ModulePath = "$Destination\$ModuleName.psm1";
 $script:ManifestPath = "$Destination\$ModuleName.psd1";
@@ -68,6 +69,38 @@ Task BuildManifest -description "Compile the Module Manifest" -depends BuildModu
   }
  }
  Update-Metadata -Path $ManifestPath -PropertyName FunctionsToExport -Value $Functions
+}
+
+Task BuildCoreModule -description "Build the Core Module" -action {
+ foreach ($ModuleName in $script:ModuleList)
+ {
+  $ModuleFolder = (Get-Item -Path "$($script:Source)\$($ModuleName)").FullName;
+  $ModuleDestination = Join-Path $script:Output $script:ModuleName $ModuleName
+  $ModulePath = Join-Path $ModuleDestination "$($ModuleName).psm1"
+
+  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new();
+  foreach ($Folder in (Get-ChildItem -Path $ModuleFolder))
+  {
+   [void]$stringbuilder.AppendLine( "Write-Verbose 'Importing from [$Folder]'" )
+   if (Test-Path -Path $Folder.FullName)
+   {
+    $FileList = Get-ChildItem $Folder.FullName -Recurse -Filter "*.ps1" -Exclude "*.Tests.ps1";
+    foreach ($File in $FileList)
+    {
+     $shortName = $file.BaseName
+     Write-Output "  Importing [.$shortName]"
+     [void]$stringbuilder.AppendLine( "# .$shortName" )
+     [void]$stringbuilder.AppendLine( [System.IO.File]::ReadAllText($file.fullname) )
+    }
+   }
+  }
+  if (!(Test-Path -Path $ModuleDestination))
+  {
+   New-Item -Path $ModuleDestination -ItemType Directory;
+  }
+  Write-Output "  Creating module [$($ModulePath)]";
+  Set-Content -Path  $ModulePath -Value $stringbuilder.ToString();
+ }
 }
 
 Task PesterTest -description "Test module" -action {
