@@ -8,7 +8,7 @@ function Invoke-Endpoint
   [Parameter(Mandatory = $true)]
   [System.Uri]$Uri,
   [Parameter(Mandatory = $true)]
-  [validateset('GET', 'POST', 'PUT', 'DELETE')]
+  [validateset('GET', 'PATCH', 'POST', 'PUT', 'DELETE')]
   [string]$Method,
   [Parameter(Mandatory = $false)]
   [hashtable]$Headers = $Global:azDevOpsHeader,
@@ -37,6 +37,10 @@ function Invoke-Endpoint
      return (Invoke-RestMethod -Uri $Uri.AbsoluteUri -Method $Method -Headers $Headers -ContentType $ContentType -Body $Body -Verbose:$VerbosePreference);
     }
     "PUT"
+    {
+     return (Invoke-RestMethod -Uri $Uri.AbsoluteUri -Method $Method -Headers $Headers -ContentType $ContentType -Body $Body -Verbose:$VerbosePreference);
+    }
+    "PATCH"
     {
      return (Invoke-RestMethod -Uri $Uri.AbsoluteUri -Method $Method -Headers $Headers -ContentType $ContentType -Body $Body -Verbose:$VerbosePreference);
     }
