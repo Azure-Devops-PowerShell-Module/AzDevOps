@@ -18,8 +18,8 @@ function Get-Operation
    Write-Verbose "GetBuild     : Begin Processing";
    Write-Verbose " OperationId : $($OperationId)";
    Write-Verbose " ApiVersion  : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -31,7 +31,7 @@ function Get-Operation
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

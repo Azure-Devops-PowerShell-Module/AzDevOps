@@ -6,44 +6,40 @@ function Get-Process
  [OutputType([Object])]
  param (
   [Parameter(Mandatory = $false)]
-  [Guid]$ProcessId
+  [Guid]$ProcessId,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.1')]
+  [string]$ApiVersion = '7.1-preview.1'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   if ($ProcessId)
+   Write-Verbose "GetProcess    : Begin Processing";
+   Write-Verbose " ProcessId    : $($ProcessId)";
+   Write-Verbose " ApiVersion   : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
    {
-    $uriProcess = $Global:azDevOpsOrg + "_apis/process/processes/$($ProcessId)?api-version=5.1"
-    return (Invoke-RestMethod -Uri $uriProcess -Method get -Headers $Global:azDevOpsHeader)
-   }
-   else
-   {
-    $uriProcess = $Global:azDevOpsOrg + "_apis/process/processes?api-version=5.1"
-          (Invoke-RestMethod -Uri $uriProcess -Method get -Headers $Global:azDevOpsHeader).Value
+    if ($ProcessId)
+    {
+     $Uri = $Global:azDevOpsOrg + "_apis/process/processes/$($ProcessId)?api-version=$($ApiVersion)";
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+    }
+    else
+    {
+     $Uri = $Global:azDevOpsOrg + "_apis/process/processes?api-version=$($ApiVersion)"
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
+    }
    }
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }
