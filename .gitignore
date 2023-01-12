@@ -351,3 +351,4 @@ MigrationBackup/
 .ionide/
 ado.connection.json
 AzDevOps.nuspec
+ado.rseng.token.json
