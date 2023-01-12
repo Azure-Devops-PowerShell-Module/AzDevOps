@@ -11,35 +11,45 @@ function Remove-Build
   [Guid]$ProjectId,
   [Parameter(Mandatory = $true, ParameterSetName = 'Project')]
   [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
-  [int]$BuildId
+  [int]$BuildId,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.7')]
+  [string]$ApiVersion = '7.1-preview.7'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "RemoveBuild  : Process Record";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectID   : $($Project.Id)";
+    Write-Verbose " BuildId     : $($Build.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectID   : $($ProjectId)";
+    Write-Verbose " BuildId     : $($BuildId)";
+   }
+   Write-Verbose " ApiVersion  : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Build = Get-AzDevOpsBuild -ProjectId $Project.Id -BuildId $BuildId -Verbose:$VerbosePreference;
     }
-    $Build = Get-AzDevOpsBuild -ProjectId $Project.Id -BuildId $BuildId
     if (!($Build.deleted))
     {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)?api-version=5.1"
+     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)?api-version=$($ApiVersion)";
      if ($PSCmdlet.ShouldProcess("Delete", "Remove Build $($Build.Id) from $($Project.name) Azure Devops Projects"))
      {
-      $Result = Invoke-RestMethod -Uri $uriProjects -Method Delete -Headers $Global:azDevOpsHeader
+      $Result = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
      }
      if (!($Result))
      {
@@ -50,17 +60,6 @@ function Remove-Build
     {
      return "Build : $($Build.id) was deleted on $(Get-Date ($Build.deletedDate)) by $($Build.deletedBy.displayName)"
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch

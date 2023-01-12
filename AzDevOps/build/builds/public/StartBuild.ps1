@@ -5,46 +5,55 @@ function Start-Build
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Project')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Project')]
   [object]$Project,
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Project')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Project')]
   [object]$Definition,
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
+  [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
   [Guid]$ProjectId,
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
+  [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
   [int]$DefinitionId,
   [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
   [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
   [hashtable[]]$Variables,
   [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
   [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
-  [switch]$Wait
+  [switch]$Wait,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.7')]
+  [string]$ApiVersion = '7.1-preview.7'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "StartBuild    : Process Record";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectID    : $($Project.Id)";
+    Write-Verbose " DefinitionId : $($Definition.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectID    : $($ProjectId)";
+    Write-Verbose " DefinitionId : $($DefinitionId)";
+   }
+   Write-Verbose " Variables    : $([string]::Join(',',$Variables.Keys))";
+   Write-Verbose " Wait         : $($Wait)";
+   Write-Verbose " ApiVersion   : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'Project'
-     {
-     }
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-      $Definition = Get-AzDevOpsBuildDefinition -ProjectId $Project.Id -DefinitionId $DefinitionId
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Definition = Get-AzDevOpsBuildDefinition -ProjectId $Project.Id -DefinitionId $DefinitionId -Verbose:$VerbosePreference;
     }
-    $uriBuild = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=5.1"
+    $uriBuild = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
     #
     # Check that variables exist in defintion
     #
@@ -59,37 +68,26 @@ function Start-Build
         [System.Management.Automation.ErrorCategory]::OpenError,
         $MyObject
        )
-      )
+      );
      }
     }
-    $Body = New-Object -TypeName psobject
-    Add-Member -InputObject $Body -MemberType NoteProperty -Name definition -Value $Definition
-    $Parameters = New-Object -TypeName psobject
-    foreach ($item in $Variables) { Add-Member -InputObject $parameters -MemberType NoteProperty -Name $item.Keys -Value $item[$item.Keys][0] }
-    Add-Member -InputObject $Body -MemberType NoteProperty -Name parameters -Value ($Parameters | ConvertTo-Json -Compress)
+    $Body = New-Object -TypeName psobject;
+    Add-Member -InputObject $Body -MemberType NoteProperty -Name definition -Value $Definition;
+    $Parameters = New-Object -TypeName psobject;
+    foreach ($item in $Variables) { Add-Member -InputObject $parameters -MemberType NoteProperty -Name $item.Keys -Value $item[$item.Keys][0] };
+    Add-Member -InputObject $Body -MemberType NoteProperty -Name parameters -Value ($Parameters | ConvertTo-Json -Compress);
     if ($PSCmdlet.ShouldProcess("Start", "Qeue Build $($Build.Id) from $($Project.name) Azure Devops Projects"))
     {
-     $Result = Invoke-RestMethod -Method post -Uri $uriBuild -Headers $Global:azDevOpsHeader -ContentType 'application/json' -Body ($Body | ConvertTo-Json -Compress -Depth 10)
+     $Result = Invoke-AdoEndpoint -Method POST -Uri ([System.Uri]::new(($uriBuild))) -Headers $Global:azDevOpsHeader -ContentType 'application/json' -Body ($Body | ConvertTo-Json -Compress -Depth 10);
      if ($Wait)
      {
       do
       {
-       Get-AzDevOpsBuild -Project $Project -BuildId $Result.id | out-null
+       Get-AzDevOpsBuild -Project $Project -BuildId $Result.id | out-null;
       } until ((Get-AzDevOpsBuild -Project $Project -BuildId $Result.id).status -eq 'completed')
      }
-     return Get-AzDevOpsBuild -Project $Project -BuildId $Result.id
+     return Get-AzDevOpsBuild -Project $Project -BuildId $Result.id;
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
