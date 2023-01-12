@@ -54,7 +54,7 @@ Task BuildModule -description "Compile the Build Module" -depends clean, BuildNe
 }
 
 Task BuildManifest -description "Compile the Module Manifest" -depends BuildModule -action {
- $ModulePath = Join-Path $script:Source $script:ModuleName;
+ $ModulePath =  $script:Source #$script:ModuleName;
  $ModuleDestination = $script:Destination;
  $CurrentManifestPath = "$($ModulePath)\$($script:ModuleName).psd1"
  Write-Output "$($script:Source)"

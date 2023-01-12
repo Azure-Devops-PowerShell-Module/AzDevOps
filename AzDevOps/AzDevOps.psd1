@@ -66,7 +66,7 @@
  # FormatsToProcess = @()
 
  # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
- NestedModules = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
+ NestedModules = @('core\core.psd1','build\build.psd1','operations\operations.psd1')
 
  # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
  # FunctionsToExport    = @('Connect-Organization','Invoke-RestMethod','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Operation')
@@ -85,7 +85,7 @@
  # DscResourcesToExport = @()
 
  # List of all modules packaged with this module
- ModuleList = @('build\build.psd1','core\core.psd1','operations\operations.psd1','processes\processes.psd1','projects\projects.psd1','teams\teams.psd1')
+ ModuleList = @('core\core.psd1','build\build.psd1','operations\operations.psd1')
 
  # List of all files packaged with this module
  # FileList = @()
