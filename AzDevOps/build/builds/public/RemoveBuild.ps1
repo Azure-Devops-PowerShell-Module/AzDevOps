@@ -46,10 +46,10 @@ function Remove-Build
     }
     if (!($Build.deleted))
     {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)?api-version=$($ApiVersion)";
+     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)?api-version=$($ApiVersion)";
      if ($PSCmdlet.ShouldProcess("Delete", "Remove Build $($Build.Id) from $($Project.name) Azure Devops Projects"))
      {
-      $Result = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+      $Result = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
      }
      if (!($Result))
      {

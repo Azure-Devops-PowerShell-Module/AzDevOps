@@ -49,15 +49,15 @@ function Get-BuildLog
      $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
      $Build = Get-AzDevOpsBuild -ProjectId $Project.id -BuildId $BuildId -Verbose:$VerbosePreference;
     }
-    $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)/logs?api-version=$($ApiVersion)";
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)/logs?api-version=$($ApiVersion)";
     if ($LogId)
     {
-     $uriProjects = $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)/logs/$($LogId)?api-version=$($ApiVersion)";
-     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)/logs/$($LogId)?api-version=$($ApiVersion)";
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
     else
     {
-     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
     }
    }
   }

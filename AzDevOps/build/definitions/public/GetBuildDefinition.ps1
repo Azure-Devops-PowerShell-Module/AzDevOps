@@ -16,56 +16,47 @@ function Get-BuildDefinition
   [ValidateSet('5.1', '7.1-preview.7')]
   [string]$ApiVersion = '7.1-preview.7'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "GetBuildDefinition : Begin Processing";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectId         : $($Project.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectId         : $($ProjectId)";
+   }
+   Write-Verbose " DefinitionId      : $($BuildId)";
+   Write-Verbose " ApiVersion        : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'Project'
-     {
-      $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions?api-version=$($ApiVersion)"
-     }
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-      $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions?api-version=$($ApiVersion)"
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions?api-version=$($ApiVersion)";
     if ($DefinitionId)
     {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions/$($DefinitionId)?api-version=$($ApiVersion)"
-     return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)
+     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions/$($DefinitionId)?api-version=$($ApiVersion)"
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
     else
     {
-     return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader).Value
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

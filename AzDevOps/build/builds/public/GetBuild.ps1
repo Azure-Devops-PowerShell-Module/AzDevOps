@@ -42,15 +42,15 @@ function Get-Build
     {
      $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
-    $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
     if ($BuildId)
     {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($BuildId)?api-version=$($ApiVersion)";
-     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($BuildId)?api-version=$($ApiVersion)";
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
     else
     {
-     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
     }
    }
   }

@@ -16,49 +16,38 @@ function Get-BuildFolder
   [ValidateSet('5.1-preview.2', '7.1-preview.2')]
   [string]$ApiVersion = '7.1-preview.2'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "GetBuildFolder : Begin Processing";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectId     : $($Project.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectId     : $($ProjectId)";
+   }
+   Write-Verbose " Path          : $($Path)";
+   Write-Verbose " ApiVersion    : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'Project'
-     {
-     }
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)"
     if ($Path)
     {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)&path=$($Path.Replace('\','/'))"
+     $Uri = $Uri + "&path=$($Path.Replace('\','/'))"
     }
-    else
-    {
-     $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)"
-    }
-    Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader | Select-Object -ExpandProperty Value
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
+    return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
    }
   }
   catch

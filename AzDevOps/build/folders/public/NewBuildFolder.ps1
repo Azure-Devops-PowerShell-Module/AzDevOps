@@ -14,56 +14,51 @@ function New-BuildFolder
   [string]$Name,
   [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
   [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-  [string]$Description
+  [string]$Description,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1-preview.2', '7.1-preview.2')]
+  [string]$ApiVersion = '7.1-preview.2'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "NewBuildFolder : Begin Processing";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectId     : $($Project.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectId     : $($ProjectId)";
+   }
+   Write-Verbose " Name          : $($Path)";
+   Write-Verbose " Description   : $($Path)";
+   Write-Verbose " ApiVersion    : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'Project'
-     {
-     }
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
     $Body = New-Object -TypeName psobject
-    if ($Name) { Add-Member -InputObject $Body -MemberType NoteProperty -Name Path -Value $Name.Replace('\', '/') }
-    if ($Description) { Add-Member -InputObject $Body -MemberType NoteProperty -Name Description -Value $Description }
-
-    $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?path=$($Name.Replace('\','/'))&api-version=5.1-preview.2"
+    if ($Name) { Add-Member -InputObject $Body -MemberType NoteProperty -Name Path -Value $Name.Replace('\', '/') };
+    if ($Description) { Add-Member -InputObject $Body -MemberType NoteProperty -Name Description -Value $Description };
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?path=$($Name.Replace('\','/'))&api-version=$($ApiVersion)";
     if ($PSCmdlet.ShouldProcess("New", "Create Folder $($Name) in $($Project.name) Azure Devops Projects"))
     {
-     Invoke-RestMethod -Uri $uriProjects -Method Put -Headers $Global:azDevOpsHeader -Body ($Body | ConvertTo-Json) -ContentType 'application/json'
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method PUT -Headers $Global:azDevOpsHeader -Body ($Body | ConvertTo-Json) -ContentType 'application/json' -Verbose:$VerbosePreference);
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

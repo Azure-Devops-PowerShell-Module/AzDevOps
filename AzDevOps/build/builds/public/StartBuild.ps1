@@ -53,7 +53,7 @@ function Start-Build
      $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
      $Definition = Get-AzDevOpsBuildDefinition -ProjectId $Project.Id -DefinitionId $DefinitionId -Verbose:$VerbosePreference;
     }
-    $uriBuild = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
     #
     # Check that variables exist in defintion
     #
@@ -78,15 +78,15 @@ function Start-Build
     Add-Member -InputObject $Body -MemberType NoteProperty -Name parameters -Value ($Parameters | ConvertTo-Json -Compress);
     if ($PSCmdlet.ShouldProcess("Start", "Qeue Build $($Build.Id) from $($Project.name) Azure Devops Projects"))
     {
-     $Result = Invoke-AdoEndpoint -Method POST -Uri ([System.Uri]::new(($uriBuild))) -Headers $Global:azDevOpsHeader -ContentType 'application/json' -Body ($Body | ConvertTo-Json -Compress -Depth 10);
+     $Result = Invoke-AdoEndpoint -Method POST -Uri ([System.Uri]::new(($Uri))) -Headers $Global:azDevOpsHeader -ContentType 'application/json' -Body ($Body | ConvertTo-Json -Compress -Depth 10) -Verbose:$VerbosePreference;
      if ($Wait)
      {
       do
       {
        Get-AzDevOpsBuild -Project $Project -BuildId $Result.id | out-null;
-      } until ((Get-AzDevOpsBuild -Project $Project -BuildId $Result.id).status -eq 'completed')
+      } until ((Get-AzDevOpsBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference).status -eq 'completed')
      }
-     return Get-AzDevOpsBuild -Project $Project -BuildId $Result.id;
+     return Get-AzDevOpsBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference;
     }
    }
   }

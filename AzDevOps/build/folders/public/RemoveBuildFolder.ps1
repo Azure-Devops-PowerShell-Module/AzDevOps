@@ -11,56 +11,49 @@ function Remove-BuildFolder
   [Guid]$ProjectId,
   [Parameter(Mandatory = $true, ParameterSetName = 'Project')]
   [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
-  [string]$Name
+  [string]$Name,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.0-preview.2', '7.1-preview.2')]
+  [string]$ApiVersion = '7.1-preview.2'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "RemoveBuildFolder : Begin Processing";
+   if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    Write-Verbose " ProjectId        : $($Project.Id)";
+   }
+   else
+   {
+    Write-Verbose " ProjectId        : $($ProjectId)";
+   }
+   Write-Verbose " Name             : $($Path)";
+   Write-Verbose " ApiVersion       : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     'Project'
-     {
-     }
-     'ProjectId'
-     {
-      $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-     }
+     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
-
-    $Folder = Get-AzDevOpsBuildFolder -Project $Project -Path $Name
-
-    $uriProjects = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders/?api-version=5.0-preview.2&path=$($Folder.Path)"
+    $Folder = Get-AzDevOpsBuildFolder -Project $Project -Path $Name -Verbose:$VerbosePreference;
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders/?api-version=$($ApiVersion)&path=$($Folder.Path)"
     if ($PSCmdlet.ShouldProcess("Delete", "Remove Folder $($Name) from $($Project.name) Azure Devops Projects"))
     {
-     Invoke-RestMethod -Uri $uriProjects -Method Delete -Headers $Global:azDevOpsHeader
-     $Project | Get-AzDevOpsBuildFolder
+     Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
+     $Project | Get-AzDevOpsBuildFolder -Verbose:$VerbosePreference;
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }
