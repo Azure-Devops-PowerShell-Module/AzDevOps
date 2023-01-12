@@ -10,16 +10,23 @@ function Update-Team
   [Parameter(Mandatory = $false)]
   [string]$Description,
   [Parameter(ValueFromPipeline)]
-  [object]$Team
+  [object]$Team,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1-preview.3', '7.1-preview.3')]
+  [string]$ApiVersion = '7.1-preview.3'
  )
 
- process
+ begin
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "UpdateTeam   : Process Record";
+   Write-Verbose " Name        : $($Name)";
+   Write-Verbose " Description : $($Description)";
+   Write-Verbose " TeamId      : $($Team.Id)";
+   Write-Verbose " ApiVersion  : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -28,29 +35,18 @@ function Update-Team
     $Body = @{
      "name"        = $Name
      "description" = $Description
-    } | ConvertTo-Json -Depth 5
+    } | ConvertTo-Json -Depth 5 -Compress;
 
-    $uriTeam = $Global:azDevOpsOrg + "_apis/projects/$($Team.projectid)/teams/$($Team.id)?api-version=5.1"
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Team.projectid)/teams/$($Team.id)?api-version=$($ApiVersion)";
     if ($PSCmdlet.ShouldProcess("Update", "Update new team in $($Project.name) Azure Devops Projects"))
     {
-     return Invoke-RestMethod -Uri $uriTeam -Method Patch -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method PATCH -Body $Body -ContentType "application/json" -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

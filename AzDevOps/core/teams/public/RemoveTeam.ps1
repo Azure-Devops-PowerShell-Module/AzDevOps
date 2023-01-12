@@ -8,46 +8,43 @@ function Remove-Team
   [Parameter(Mandatory = $true)]
   [Guid]$ProjectId,
   [Parameter(Mandatory = $true)]
-  [Guid]$TeamId
+  [Guid]$TeamId,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1-preview.3', '7.1-preview.3')]
+  [string]$ApiVersion = '7.1-preview.3'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   $Project = Get-AzDevOpsProject -ProjectId $ProjectId
-   $Team = Get-AzDevOpsTeam -ProjectId $ProjectId -TeamId $TeamId
-
-   $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/$($Team.id)?api-version=5.1"
-   if ($PSCmdlet.ShouldProcess("Delete", "Remove team $($Team.name) from $($Project.name) Azure Devops Projects"))
+   Write-Verbose "RemoveTeam  : Begin Processing";
+   Write-Verbose " ProjectId  : $($Project.Id)";
+   Write-Verbose " TeamId     : $($TeamId)";
+   Write-Verbose " ApiVersion : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
    {
-    $Result = Invoke-RestMethod -Uri $uriProjects -Method Delete -Headers $Global:azDevOpsHeader
-    if (!($Result))
+    $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+    $Team = Get-AdoTeam -ProjectId $ProjectId -TeamId $TeamId -Verbose:$VerbosePreference;
+
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/$($Team.id)?api-version=$($ApiVersion)"
+    if ($PSCmdlet.ShouldProcess("Delete", "Remove team $($Team.name) from $($Project.name) Azure Devops Projects"))
     {
-     return "Team : $($Team.id) removed from Project : $($Project.id)"
+     $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
+     if (!($Result))
+     {
+      return "Team : $($Team.id) removed from Project : $($Project.id)";
+     }
     }
    }
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }

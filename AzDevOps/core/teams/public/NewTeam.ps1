@@ -10,16 +10,22 @@ function New-Team
   [Parameter(Mandatory = $false)]
   [string]$Description,
   [Parameter(ValueFromPipeline)]
-  [object]$Project
+  [object]$Project,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1-preview.3', '7.1-preview.3')]
+  [string]$ApiVersion = '7.1-preview.3'
  )
-
  process
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "NewTeam      : Process Record";
+   Write-Verbose " Name        : $($Name)";
+   Write-Verbose " Description : $($Description)";
+   Write-Verbose " ProjectId   : $($Project.Id)";
+   Write-Verbose " ApiVersion  : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -28,29 +34,17 @@ function New-Team
     $Body = @{
      "name"        = $Name
      "description" = $Description
-    } | ConvertTo-Json -Depth 5
-
-    $uriTeam = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/?api-version=5.1"
+    } | ConvertTo-Json -Depth 5 -Compress;
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/?api-version=$($ApiVersion)";
     if ($PSCmdlet.ShouldProcess("Create", "Create new team in $($Project.name) Azure Devops Projects"))
     {
-     return Invoke-RestMethod -Uri $uriTeam -Method Post -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Post -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json" -Verbose:$VerbosePreference);
     }
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }
