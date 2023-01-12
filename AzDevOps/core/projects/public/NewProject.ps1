@@ -15,12 +15,12 @@ function New-Project
  )
  begin
  {
+  Write-Verbose "NewProject      : Begin Processing";
+  Write-Verbose " Name           : $($BuildId)";
+  Write-Verbose " Description    : $($BuildId)";
+  Write-Verbose " ApiVersion     : $($ApiVersion)";
   try
   {
-   Write-Verbose "NewProject      : Begin Processing";
-   Write-Verbose " Name           : $($BuildId)";
-   Write-Verbose " Description    : $($BuildId)";
-   Write-Verbose " ApiVersion     : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #
@@ -50,7 +50,6 @@ function New-Project
      $Status = Get-AdoOperations -OperationId $Result.id -Verbose:$VerbosePreference;
      Write-Verbose $Status.status;
     } until ($Status.status -eq 'succeeded')
-
     Start-Sleep -Seconds 1;
     Get-AdoProject  -Verbose:$VerbosePreference | Where-Object -Property name -eq $Name;
    }

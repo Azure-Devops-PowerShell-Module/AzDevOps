@@ -17,13 +17,13 @@ function New-Team
  )
  process
  {
+  Write-Verbose "NewTeam      : Process Record";
+  Write-Verbose " Name        : $($Name)";
+  Write-Verbose " Description : $($Description)";
+  Write-Verbose " ProjectId   : $($Project.Id)";
+  Write-Verbose " ApiVersion  : $($ApiVersion)";
   try
   {
-   Write-Verbose "NewTeam      : Process Record";
-   Write-Verbose " Name        : $($Name)";
-   Write-Verbose " Description : $($Description)";
-   Write-Verbose " ProjectId   : $($Project.Id)";
-   Write-Verbose " ApiVersion  : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

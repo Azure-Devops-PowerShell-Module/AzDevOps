@@ -13,11 +13,11 @@ function Remove-Project
  )
  begin
  {
+  Write-Verbose "RemoveProject    : Begin Processing";
+  Write-Verbose " ProjectId       : $($Project.Id)";
+  Write-Verbose " ApiVersion      : $($ApiVersion)";
   try
   {
-   Write-Verbose "RemoveProject    : Begin Processing";
-   Write-Verbose " ProjectId       : $($Project.Id)";
-   Write-Verbose " ApiVersion      : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #
@@ -30,7 +30,6 @@ function Remove-Project
     {
      $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
     }
-
     do
     {
      $Status = Get-AdoOperations -OperationId $Result.id -Verbose:$VerbosePreference;

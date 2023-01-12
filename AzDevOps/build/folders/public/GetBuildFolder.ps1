@@ -18,19 +18,19 @@ function Get-BuildFolder
  )
  process
  {
+  Write-Verbose "GetBuildFolder : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectId     : $($Project.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectId     : $($ProjectId)";
+  }
+  Write-Verbose " Path          : $($Path)";
+  Write-Verbose " ApiVersion    : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetBuildFolder : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectId     : $($Project.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectId     : $($ProjectId)";
-   }
-   Write-Verbose " Path          : $($Path)";
-   Write-Verbose " ApiVersion    : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #
@@ -42,7 +42,7 @@ function Get-BuildFolder
     {
      $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
-    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)"
+    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders?api-version=$($ApiVersion)";
     if ($Path)
     {
      $Uri = $Uri + "&path=$($Path.Replace('\','/'))"
@@ -52,7 +52,7 @@ function Get-BuildFolder
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

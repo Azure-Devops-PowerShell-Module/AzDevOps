@@ -19,14 +19,14 @@ function Invoke-Endpoint
  )
  begin
  {
-  Write-Verbose "InvokeRestMethod : Begin Processing"
-  Write-Verbose " Uri             : $($Uri.AbsoluteUri)"
-  Write-Verbose " Method          : $($Method)"
-  Write-Verbose " Headers         : $($Headers)"
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
+  Write-Verbose "InvokeRestMethod : Begin Processing";
+  Write-Verbose " Uri             : $($Uri.AbsoluteUri)";
+  Write-Verbose " Method          : $($Method)";
+  Write-Verbose " Headers         : $($Headers)";
   try
   {
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -55,7 +55,7 @@ function Invoke-Endpoint
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

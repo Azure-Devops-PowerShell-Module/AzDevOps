@@ -18,19 +18,19 @@ function Remove-BuildFolder
  )
  process
  {
+  Write-Verbose "RemoveBuildFolder : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectId        : $($Project.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectId        : $($ProjectId)";
+  }
+  Write-Verbose " Name             : $($Path)";
+  Write-Verbose " ApiVersion       : $($ApiVersion)";
   try
   {
-   Write-Verbose "RemoveBuildFolder : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectId        : $($Project.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectId        : $($ProjectId)";
-   }
-   Write-Verbose " Name             : $($Path)";
-   Write-Verbose " ApiVersion       : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

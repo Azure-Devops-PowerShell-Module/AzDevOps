@@ -18,13 +18,13 @@ function Update-Team
 
  begin
  {
+  Write-Verbose "UpdateTeam   : Process Record";
+  Write-Verbose " Name        : $($Name)";
+  Write-Verbose " Description : $($Description)";
+  Write-Verbose " TeamId      : $($Team.Id)";
+  Write-Verbose " ApiVersion  : $($ApiVersion)";
   try
   {
-   Write-Verbose "UpdateTeam   : Process Record";
-   Write-Verbose " Name        : $($Name)";
-   Write-Verbose " Description : $($Description)";
-   Write-Verbose " TeamId      : $($Team.Id)";
-   Write-Verbose " ApiVersion  : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

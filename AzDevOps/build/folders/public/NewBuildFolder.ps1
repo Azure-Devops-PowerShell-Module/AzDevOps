@@ -21,20 +21,20 @@ function New-BuildFolder
  )
  process
  {
+  Write-Verbose "NewBuildFolder : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectId     : $($Project.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectId     : $($ProjectId)";
+  }
+  Write-Verbose " Name          : $($Path)";
+  Write-Verbose " Description   : $($Path)";
+  Write-Verbose " ApiVersion    : $($ApiVersion)";
   try
   {
-   Write-Verbose "NewBuildFolder : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectId     : $($Project.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectId     : $($ProjectId)";
-   }
-   Write-Verbose " Name          : $($Path)";
-   Write-Verbose " Description   : $($Path)";
-   Write-Verbose " ApiVersion    : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

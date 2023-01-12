@@ -18,19 +18,19 @@ function Get-BuildDefinition
  )
  process
  {
+  Write-Verbose "GetBuildDefinition : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectId         : $($Project.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectId         : $($ProjectId)";
+  }
+  Write-Verbose " DefinitionId      : $($BuildId)";
+  Write-Verbose " ApiVersion        : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetBuildDefinition : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectId         : $($Project.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectId         : $($ProjectId)";
-   }
-   Write-Verbose " DefinitionId      : $($BuildId)";
-   Write-Verbose " ApiVersion        : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

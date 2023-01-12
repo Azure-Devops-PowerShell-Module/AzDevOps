@@ -17,13 +17,13 @@ function Update-Project
  )
  begin
  {
+  Write-Verbose "UpdateProject : Begin Processing";
+  Write-Verbose " Name         : $($Name)";
+  Write-Verbose " Description  : $($Description)";
+  Write-Verbose " ProjectId    : $($Project.Id)";
+  Write-Verbose " ApiVersion   : $($ApiVersion)";
   try
   {
-   Write-Verbose "UpdateProject : Begin Processing";
-   Write-Verbose " Name         : $($Name)";
-   Write-Verbose " Description  : $($Description)";
-   Write-Verbose " ProjectId    : $($Project.Id)";
-   Write-Verbose " ApiVersion   : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #
@@ -43,7 +43,6 @@ function Update-Project
       }
      }
     } | ConvertTo-Json -Depth 5 -Compress;
-
     $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=$($ApiVersion)";
     if ($PSCmdlet.ShouldProcess("Modify", "Update $($Project.Name) values"))
     {

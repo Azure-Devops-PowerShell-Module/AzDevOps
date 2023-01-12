@@ -13,11 +13,11 @@ function Get-Process
  )
  begin
  {
+  Write-Verbose "GetProcess    : Begin Processing";
+  Write-Verbose " ProcessId    : $($ProcessId)";
+  Write-Verbose " ApiVersion   : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetProcess    : Begin Processing";
-   Write-Verbose " ProcessId    : $($ProcessId)";
-   Write-Verbose " ApiVersion   : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

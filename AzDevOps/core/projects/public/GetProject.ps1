@@ -13,11 +13,11 @@ function Get-Project
  )
  begin
  {
+  Write-Verbose "GetProject    : Begin Processing";
+  Write-Verbose " ProjectId    : $($ProjectId)";
+  Write-Verbose " ApiVersion   : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetProject    : Begin Processing";
-   Write-Verbose " ProjectId    : $($ProjectId)";
-   Write-Verbose " ApiVersion   : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

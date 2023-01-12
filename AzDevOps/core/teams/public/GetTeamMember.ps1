@@ -18,19 +18,19 @@ function Get-TeamMember
  )
  process
  {
+  Write-Verbose "GetTeamMember     : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectId        : $($Project.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectId        : $($ProjectId)";
+  }
+  Write-Verbose " TeamId           : $($TeamId)";
+  Write-Verbose " ApiVersion       : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetTeamMember     : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectId        : $($Project.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectId        : $($ProjectId)";
-   }
-   Write-Verbose " TeamId           : $($TeamId)";
-   Write-Verbose " ApiVersion       : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

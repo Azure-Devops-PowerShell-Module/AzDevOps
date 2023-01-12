@@ -25,22 +25,22 @@ function Start-Build
  )
  process
  {
+  Write-Verbose "StartBuild    : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectID    : $($Project.Id)";
+   Write-Verbose " DefinitionId : $($Definition.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectID    : $($ProjectId)";
+   Write-Verbose " DefinitionId : $($DefinitionId)";
+  }
+  Write-Verbose " Variables    : $([string]::Join(',',$Variables.Keys))";
+  Write-Verbose " Wait         : $($Wait)";
+  Write-Verbose " ApiVersion   : $($ApiVersion)";
   try
   {
-   Write-Verbose "StartBuild    : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectID    : $($Project.Id)";
-    Write-Verbose " DefinitionId : $($Definition.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectID    : $($ProjectId)";
-    Write-Verbose " DefinitionId : $($DefinitionId)";
-   }
-   Write-Verbose " Variables    : $([string]::Join(',',$Variables.Keys))";
-   Write-Verbose " Wait         : $($Wait)";
-   Write-Verbose " ApiVersion   : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

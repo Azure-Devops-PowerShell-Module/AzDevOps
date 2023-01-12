@@ -15,11 +15,11 @@ function Connect-Organization
  )
  begin
  {
+  Write-Verbose "ConnectOrganization : Begin Processing";
+  Write-Verbose " Orgname            : $($Orgname)";
+  Write-Verbose " ApieVersion        : $($ApiVersion)";
   try
   {
-   Write-Verbose "ConnectOrganization : Begin Processing";
-   Write-Verbose " Orgname            : $($Orgname)";
-   Write-Verbose " ApieVersion        : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    $azDevOpsHeader = @{Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($PAT)")) };

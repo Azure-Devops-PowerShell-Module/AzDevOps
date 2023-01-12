@@ -22,21 +22,21 @@ function Get-BuildLog
  )
  process
  {
+  Write-Verbose "GetBuildLog  : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectID   : $($Project.Id)";
+   Write-Verbose " BuildId     : $($Build.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectID   : $($ProjectId)";
+   Write-Verbose " BuildId     : $($BuildId)";
+  }
+  Write-Verbose " LogId       : $($LogId)";
+  Write-Verbose " ApiVersion  : $($ApiVersion)";
   try
   {
-   Write-Verbose "GetBuildLog  : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectID   : $($Project.Id)";
-    Write-Verbose " BuildId     : $($Build.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectID   : $($ProjectId)";
-    Write-Verbose " BuildId     : $($BuildId)";
-   }
-   Write-Verbose " LogId       : $($LogId)";
-   Write-Verbose " ApiVersion  : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

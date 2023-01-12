@@ -18,20 +18,20 @@ function Remove-Build
  )
  process
  {
+  Write-Verbose "RemoveBuild  : Process Record";
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose " ProjectID   : $($Project.Id)";
+   Write-Verbose " BuildId     : $($Build.Id)";
+  }
+  else
+  {
+   Write-Verbose " ProjectID   : $($ProjectId)";
+   Write-Verbose " BuildId     : $($BuildId)";
+  }
+  Write-Verbose " ApiVersion  : $($ApiVersion)";
   try
   {
-   Write-Verbose "RemoveBuild  : Process Record";
-   if ($PSCmdlet.ParameterSetName -eq 'Project')
-   {
-    Write-Verbose " ProjectID   : $($Project.Id)";
-    Write-Verbose " BuildId     : $($Build.Id)";
-   }
-   else
-   {
-    Write-Verbose " ProjectID   : $($ProjectId)";
-    Write-Verbose " BuildId     : $($BuildId)";
-   }
-   Write-Verbose " ApiVersion  : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #

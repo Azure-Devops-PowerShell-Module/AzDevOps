@@ -15,12 +15,12 @@ function Remove-Team
  )
  begin
  {
+  Write-Verbose "RemoveTeam  : Begin Processing";
+  Write-Verbose " ProjectId  : $($Project.Id)";
+  Write-Verbose " TeamId     : $($TeamId)";
+  Write-Verbose " ApiVersion : $($ApiVersion)";
   try
   {
-   Write-Verbose "RemoveTeam  : Begin Processing";
-   Write-Verbose " ProjectId  : $($Project.Id)";
-   Write-Verbose " TeamId     : $($TeamId)";
-   Write-Verbose " ApiVersion : $($ApiVersion)";
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
    #
