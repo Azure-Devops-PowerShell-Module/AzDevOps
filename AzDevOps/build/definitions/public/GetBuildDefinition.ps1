@@ -20,7 +20,7 @@ function Get-BuildDefinition
  {
   try
   {
-   Write-Verbose "GetBuildDefinition : Begin Processing";
+   Write-Verbose "GetBuildDefinition : Process Record";
    if ($PSCmdlet.ParameterSetName -eq 'Project')
    {
     Write-Verbose " ProjectId         : $($Project.Id)";

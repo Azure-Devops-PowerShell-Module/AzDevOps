@@ -23,7 +23,7 @@ function New-BuildFolder
  {
   try
   {
-   Write-Verbose "NewBuildFolder : Begin Processing";
+   Write-Verbose "NewBuildFolder : Process Record";
    if ($PSCmdlet.ParameterSetName -eq 'Project')
    {
     Write-Verbose " ProjectId     : $($Project.Id)";

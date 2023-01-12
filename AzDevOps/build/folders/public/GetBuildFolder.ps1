@@ -20,7 +20,7 @@ function Get-BuildFolder
  {
   try
   {
-   Write-Verbose "GetBuildFolder : Begin Processing";
+   Write-Verbose "GetBuildFolder : Process Record";
    if ($PSCmdlet.ParameterSetName -eq 'Project')
    {
     Write-Verbose " ProjectId     : $($Project.Id)";
