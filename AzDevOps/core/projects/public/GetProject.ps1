@@ -6,44 +6,40 @@ function Get-Project
  [OutputType([Object])]
  param (
   [Parameter(Mandatory = $false)]
-  [Guid]$ProjectId
+  [Guid]$ProjectId,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.4')]
+  [string]$ApiVersion = '7.1-preview.4'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   if ($ProjectId)
+   Write-Verbose "GetProject    : Begin Processing";
+   Write-Verbose " ProjectId    : $($ProjectId)";
+   Write-Verbose " ApiVersion   : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
    {
-    $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($ProjectId)?api-version=5.1"
-    return (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader)
-   }
-   else
-   {
-    $uriProjects = $Global:azDevOpsOrg + "_apis/projects?api-version=5.1"
-          (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader).Value
+    if ($ProjectId)
+    {
+     $Uri = $Global:azDevOpsOrg + "_apis/projects/$($ProjectId)?api-version=$($ApiVersion)";
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+    }
+    else
+    {
+     $Uri = $Global:azDevOpsOrg + "_apis/projects?api-version=$($ApiVersion)";
+     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
+    }
    }
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }

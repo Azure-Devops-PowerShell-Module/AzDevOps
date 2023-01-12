@@ -6,47 +6,42 @@ function Remove-Project
  [OutputType([String])]
  param (
   [Parameter(Mandatory = $true)]
-  [object]$Project
+  [object]$Project,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.4')]
+  [string]$ApiVersion = '7.1-preview.4'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=5.1"
-   if ($PSCmdlet.ShouldProcess("Remove", "Delete $($Project.Name) from $($Global:azDevOpsOrg) Azure Devops"))
+   Write-Verbose "RemoveProject    : Begin Processing";
+   Write-Verbose " ProjectId       : $($Project.Id)";
+   Write-Verbose " ApiVersion      : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
    {
-    $Result = Invoke-RestMethod -Uri $uriProjects -Method Delete -Headers $Global:azDevOpsHeader
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=$($ApiVersion)";
+    if ($PSCmdlet.ShouldProcess("Remove", "Delete $($Project.Name) from $($Global:azDevOpsOrg) Azure Devops"))
+    {
+     $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
+    }
+
+    do
+    {
+     $Status = Get-AzDevOpsOperations -OperationId $Result.id -Verbose:$VerbosePreference;
+     Write-Verbose $Status.status;
+    } until ($Status.status -eq 'succeeded')
+    return "Project $($Project.name) removed";
    }
-
-   do
-   {
-    $Status = Get-AzDevOpsOperations -OperationId $Result.id
-    Write-Verbose $Status.status
-   } until ($Status.status -eq 'succeeded')
-
-   return "Project $($Project.name) removed"
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }

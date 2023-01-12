@@ -6,34 +6,27 @@ function Get-ProjectProperty
  [OutputType([Object])]
  param (
   [Parameter(ValueFromPipeline)]
-  [object]$Project
+  [object]$Project,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1-preview.1', '7.1-preview.1')]
+  [string]$ApiVersion = '7.1-preview.1'
  )
-
- process
+ begin
  {
-  $ErrorActionPreference = 'Stop'
-  $Error.Clear()
-
   try
   {
+   Write-Verbose "GetBuild    : Begin Processing";
+   Write-Verbose " ProjectId  : $($Project.Id)";
+   Write-Verbose " ApiVersion : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
    #
    # Are we connected
    #
    if ($Global:azDevOpsConnected)
    {
-    $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/properties?api-version=5.1-preview.1"
-          (Invoke-RestMethod -Uri $uriProjects -Method get -Headers $Global:azDevOpsHeader).Value
-   }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
-              ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-      'Projects.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/properties?api-version=$($ApiVersion)";
+    return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value;
    }
   }
   catch

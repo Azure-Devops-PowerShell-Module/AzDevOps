@@ -10,52 +10,50 @@ function Update-Project
   [Parameter(Mandatory = $false)]
   [string]$Description,
   [Parameter(Mandatory = $true)]
-  [object]$Project
+  [object]$Project,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.4')]
+  [string]$ApiVersion = '7.1-preview.4'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   $Body = @{
-    "name"         = $Name
-    "description"  = $Description
-    "capabilities" = @{
-     "versioncontrol"  = @{
-      "sourceControlType" = "Git"
-     }
-     "processTemplate" = @{
-      "templateTypeId" = "b8a3a935-7e91-48b8-a94c-606d37c3e9f2"
-     }
-    }
-   } | ConvertTo-Json -Depth 5
-
-   $uriProjects = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=5.1"
-   if ($PSCmdlet.ShouldProcess("Modify", "Update $($Project.Name) values"))
+   Write-Verbose "UpdateProject : Begin Processing";
+   Write-Verbose " Name         : $($Name)";
+   Write-Verbose " Description  : $($Description)";
+   Write-Verbose " ProjectId    : $($Project.Id)";
+   Write-Verbose " ApiVersion   : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
    {
-    Invoke-RestMethod -Uri $uriProjects -Method Patch -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
+    $Body = @{
+     "name"         = $Name
+     "description"  = $Description
+     "capabilities" = @{
+      "versioncontrol"  = @{
+       "sourceControlType" = "Git"
+      }
+      "processTemplate" = @{
+       "templateTypeId" = "b8a3a935-7e91-48b8-a94c-606d37c3e9f2"
+      }
+     }
+    } | ConvertTo-Json -Depth 5 -Compress;
+
+    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=$($ApiVersion)";
+    if ($PSCmdlet.ShouldProcess("Modify", "Update $($Project.Name) values"))
+    {
+     Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method PATCH -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json" -Verbose:$VerbosePreference;
+    }
    }
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }

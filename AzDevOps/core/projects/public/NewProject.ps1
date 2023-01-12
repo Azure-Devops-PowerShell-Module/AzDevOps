@@ -8,61 +8,56 @@ function New-Project
   [Parameter(Mandatory = $true)]
   [string]$Name,
   [Parameter(Mandatory = $false)]
-  [string]$Description
+  [string]$Description,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.4')]
+  [string]$ApiVersion = '7.1-preview.4'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   $Body = @{
-    "name"         = $Name
-    "description"  = $Description
-    "capabilities" = @{
-     "versioncontrol"  = @{
-      "sourceControlType" = "Git"
+   Write-Verbose "NewProject      : Begin Processing";
+   Write-Verbose " Name           : $($BuildId)";
+   Write-Verbose " Description    : $($BuildId)";
+   Write-Verbose " ApiVersion     : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
+   {
+    $Body = @{
+     "name"         = $Name
+     "description"  = $Description
+     "capabilities" = @{
+      "versioncontrol"  = @{
+       "sourceControlType" = "Git"
+      }
+      "processTemplate" = @{
+       "templateTypeId" = "b8a3a935-7e91-48b8-a94c-606d37c3e9f2"
+      }
      }
-     "processTemplate" = @{
-      "templateTypeId" = "b8a3a935-7e91-48b8-a94c-606d37c3e9f2"
-     }
+    } | ConvertTo-Json -Depth 5 -Compress;
+    $Uri = $Global:azDevOpsOrg + "_apis/projects?api-version=$($ApiVersion)";
+    if ($PSCmdlet.ShouldProcess("Create", "Create new project in $($Global:azDevOpsOrg) Azure Devops"))
+    {
+     $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method POST -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json" -Verbose:$VerbosePreference;
     }
-   } | ConvertTo-Json -Depth 5
+    do
+    {
+     $Status = Get-AzDevOpsOperations -OperationId $Result.id -Verbose:$VerbosePreference;
+     Write-Verbose $Status.status;
+    } until ($Status.status -eq 'succeeded')
 
-   $uriProjects = $Global:azDevOpsOrg + "_apis/projects?api-version=5.1"
-   if ($PSCmdlet.ShouldProcess("Create", "Create new project in $($Global:azDevOpsOrg) Azure Devops"))
-   {
-    $Result = Invoke-RestMethod -Uri $uriProjects -Method Post -Headers $Global:azDevOpsHeader -Body $Body -ContentType "application/json"
+    Start-Sleep -Seconds 1;
+    Get-AzDevOpsProject  -Verbose:$VerbosePreference | Where-Object -Property name -eq $Name;
    }
-
-   do
-   {
-    $Status = Get-AzDevOpsOperations -OperationId $Result.id
-    Write-Verbose $Status.status
-   } until ($Status.status -eq 'succeeded')
-
-   Start-Sleep -Seconds 1
-   Get-AzDevOpsProject | Where-Object -Property name -eq $Name
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_;
   }
- }
- catch
- {
-  throw $_
  }
 }
