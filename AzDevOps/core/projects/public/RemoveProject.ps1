@@ -33,7 +33,7 @@ function Remove-Project
 
     do
     {
-     $Status = Get-AzDevOpsOperations -OperationId $Result.id -Verbose:$VerbosePreference;
+     $Status = Get-AdoOperations -OperationId $Result.id -Verbose:$VerbosePreference;
      Write-Verbose $Status.status;
     } until ($Status.status -eq 'succeeded')
     return "Project $($Project.name) removed";

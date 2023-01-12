@@ -40,7 +40,7 @@ function Get-BuildDefinition
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions?api-version=$($ApiVersion)";
     if ($DefinitionId)

@@ -31,8 +31,8 @@ function Remove-BuildFolder
    }
    Write-Verbose " Name             : $($Path)";
    Write-Verbose " ApiVersion       : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -40,14 +40,14 @@ function Remove-BuildFolder
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
-    $Folder = Get-AzDevOpsBuildFolder -Project $Project -Path $Name -Verbose:$VerbosePreference;
+    $Folder = Get-AdoBuildFolder -Project $Project -Path $Name -Verbose:$VerbosePreference;
     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/folders/?api-version=$($ApiVersion)&path=$($Folder.Path)"
     if ($PSCmdlet.ShouldProcess("Delete", "Remove Folder $($Name) from $($Project.name) Azure Devops Projects"))
     {
      Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
-     $Project | Get-AzDevOpsBuildFolder -Verbose:$VerbosePreference;
+     $Project | Get-AdoBuildFolder -Verbose:$VerbosePreference;
     }
    }
   }

@@ -41,8 +41,8 @@ function Start-Build
    Write-Verbose " Variables    : $([string]::Join(',',$Variables.Keys))";
    Write-Verbose " Wait         : $($Wait)";
    Write-Verbose " ApiVersion   : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -50,8 +50,8 @@ function Start-Build
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-     $Definition = Get-AzDevOpsBuildDefinition -ProjectId $Project.Id -DefinitionId $DefinitionId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Definition = Get-AdoBuildDefinition -ProjectId $Project.Id -DefinitionId $DefinitionId -Verbose:$VerbosePreference;
     }
     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds?api-version=$($ApiVersion)";
     #
@@ -83,16 +83,16 @@ function Start-Build
      {
       do
       {
-       Get-AzDevOpsBuild -Project $Project -BuildId $Result.id | out-null;
-      } until ((Get-AzDevOpsBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference).status -eq 'completed')
+       Get-AdoBuild -Project $Project -BuildId $Result.id | out-null;
+      } until ((Get-AdoBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference).status -eq 'completed')
      }
-     return Get-AzDevOpsBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference;
+     return Get-AdoBuild -Project $Project -BuildId $Result.id -Verbose:$VerbosePreference;
     }
    }
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

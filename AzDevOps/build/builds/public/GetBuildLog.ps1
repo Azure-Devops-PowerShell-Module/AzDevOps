@@ -46,8 +46,8 @@ function Get-BuildLog
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-     $Build = Get-AzDevOpsBuild -ProjectId $Project.id -BuildId $BuildId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Build = Get-AdoBuild -ProjectId $Project.id -BuildId $BuildId -Verbose:$VerbosePreference;
     }
     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)/logs?api-version=$($ApiVersion)";
     if ($LogId)

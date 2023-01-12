@@ -32,8 +32,8 @@ function Remove-Build
     Write-Verbose " BuildId     : $($BuildId)";
    }
    Write-Verbose " ApiVersion  : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -41,8 +41,8 @@ function Remove-Build
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-     $Build = Get-AzDevOpsBuild -ProjectId $Project.Id -BuildId $BuildId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Build = Get-AdoBuild -ProjectId $Project.Id -BuildId $BuildId -Verbose:$VerbosePreference;
     }
     if (!($Build.deleted))
     {
@@ -64,7 +64,7 @@ function Remove-Build
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

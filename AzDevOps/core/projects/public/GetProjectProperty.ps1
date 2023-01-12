@@ -18,8 +18,8 @@ function Get-ProjectProperty
    Write-Verbose "GetBuild    : Begin Processing";
    Write-Verbose " ProjectId  : $($Project.Id)";
    Write-Verbose " ApiVersion : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -31,7 +31,7 @@ function Get-ProjectProperty
   }
   catch
   {
-   throw $_
+   throw $_;
   }
  }
 }

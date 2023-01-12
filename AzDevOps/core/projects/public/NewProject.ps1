@@ -47,12 +47,12 @@ function New-Project
     }
     do
     {
-     $Status = Get-AzDevOpsOperations -OperationId $Result.id -Verbose:$VerbosePreference;
+     $Status = Get-AdoOperations -OperationId $Result.id -Verbose:$VerbosePreference;
      Write-Verbose $Status.status;
     } until ($Status.status -eq 'succeeded')
 
     Start-Sleep -Seconds 1;
-    Get-AzDevOpsProject  -Verbose:$VerbosePreference | Where-Object -Property name -eq $Name;
+    Get-AdoProject  -Verbose:$VerbosePreference | Where-Object -Property name -eq $Name;
    }
   }
   catch

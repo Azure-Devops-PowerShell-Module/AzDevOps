@@ -35,8 +35,8 @@ function New-BuildFolder
    Write-Verbose " Name          : $($Path)";
    Write-Verbose " Description   : $($Path)";
    Write-Verbose " ApiVersion    : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop'
-   $Error.Clear()
+   $ErrorActionPreference = 'Stop';
+   $Error.Clear();
    #
    # Are we connected
    #
@@ -44,7 +44,7 @@ function New-BuildFolder
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AzDevOpsProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
     $Body = New-Object -TypeName psobject
     if ($Name) { Add-Member -InputObject $Body -MemberType NoteProperty -Name Path -Value $Name.Replace('\', '/') };
