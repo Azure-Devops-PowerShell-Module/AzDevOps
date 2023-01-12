@@ -6,36 +6,32 @@ function Get-Operation
  [OutputType([Object])]
  param (
   [Parameter(Mandatory = $true)]
-  [Guid]$OperationId
+  [Guid]$OperationId,
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('5.1', '7.1-preview.1')]
+  [string]$ApiVersion = '7.1-preview.1'
  )
-
- $ErrorActionPreference = 'Stop'
- $Error.Clear()
-
- try
+ begin
  {
-  #
-  # Are we connected
-  #
-  if ($Global:azDevOpsConnected)
+  try
   {
-   $uriOperations = $Global:azDevOpsOrg + "_apis/operations/$($OperationId)?api-version=5.1"
-   Invoke-RestMethod -Uri $uriOperations -Method Get -Headers $Global:azDevOpsHeader
+   Write-Verbose "GetBuild     : Begin Processing";
+   Write-Verbose " OperationId : $($OperationId)";
+   Write-Verbose " ApiVersion  : $($ApiVersion)";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
+   #
+   # Are we connected
+   #
+   if ($Global:azDevOpsConnected)
+   {
+    $Uri = $Global:azDevOpsOrg + "_apis/operations/$($OperationId)?api-version=$($ApiVersion)";
+    return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+   }
   }
-  else
+  catch
   {
-   $PSCmdlet.ThrowTerminatingError(
-    [System.Management.Automation.ErrorRecord]::new(
-            ([System.Management.Automation.ItemNotFoundException]"Not connected to Azure DevOps, please run Connect-AzDevOpsOrganization"),
-     'Projects.Functions',
-     [System.Management.Automation.ErrorCategory]::OpenError,
-     $MyObject
-    )
-   )
+   throw $_
   }
- }
- catch
- {
-  throw $_
  }
 }
