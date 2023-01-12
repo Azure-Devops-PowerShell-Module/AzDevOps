@@ -13,7 +13,7 @@ What's changed:
 
 1. Module functions are stored in folders and scripts
 2. PsakeFile updated to work with module and nested modules
-3. Invoke-AdoRestMethod function created
+3. Invoke-AdoEndpoint function created
    1. Define all possible APIVersions
    2. Replace existing Invoke-RestMethod across all functions
 4. API versions have been updated
