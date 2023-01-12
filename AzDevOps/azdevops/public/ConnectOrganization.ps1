@@ -26,7 +26,7 @@ function Connect-Organization
    $Error.Clear();
    $azDevOpsHeader = @{Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($PAT)")) }
    $azDevOpsOrg = "https://dev.azure.com/$($Orgname)/"
- 
+
    $uriProjects = $azDevOpsOrg + "_apis/projects?api-version=$($ApiVersion)"
    $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method get -Headers $azDevOpsHeader -Verbose:$VerbosePreference
    if ($Result.GetType().Name -ne 'String')
@@ -36,19 +36,8 @@ function Connect-Organization
     Set-Variable -Name azDevOpsConnected -Value $true -Scope Global
     return "Connected to $($azDevOpsOrg)"
    }
-   else
-   {
-    $PSCmdlet.ThrowTerminatingError(
-     [System.Management.Automation.ErrorRecord]::new(
- ([System.Net.WebSockets.WebSocketException]"Failed to connect to Azure DevOps, please check OrgName or Token"),
-      'Authentication.Functions',
-      [System.Management.Automation.ErrorCategory]::OpenError,
-      $MyObject
-     )
-    )
-   }
   }
-  catch 
+  catch
   {
    throw $_;
   }
