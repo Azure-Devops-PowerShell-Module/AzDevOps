@@ -120,5 +120,5 @@
  HelpInfoURI          = 'https://github.com/Azure-Devops-PowerShell-Module/operations/blob/master/README.md'
 
  # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
- DefaultCommandPrefix = 'Ado'
+ # DefaultCommandPrefix = 'Ado'
 }
