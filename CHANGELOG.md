@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[2.0.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.0.0) - 2023-01-11
 
-This release is a complete overhaul of the module. Functions have been seperated into individual files and stored in folders, and the psakefile will handle building and publishing the module.
+This release is a complete overhaul of the module. Functions have been seperated into individual files and stored in
+folders, and the psakefile will handle building and publishing the module.
+
+### Breaking Change
+
+Modules prefixes have been changed from AzDevOps to Ado
 
 What's changed:
 
@@ -16,8 +21,18 @@ What's changed:
 3. Invoke-AdoEndpoint function created
    1. Define all possible APIVersions
    2. Replace existing Invoke-RestMethod across all functions
-4. API versions have been updated
-5. Create Tests
+4. Added new functions for Build
+   1. Get-AdoBuild
+   2. Get-AdoBuildLog
+   3. Remove-AdoBuild
+   4. Start-AdoBuild
+   5. Get-BuildDefinition
+   6. Get-BuildFolder
+   7. New-BuildFolder
+   8. Remove-BuildFolder
+5. API versions have been updated
+6. Updated documentaiton
+7. Create Tests
 
 --
 
