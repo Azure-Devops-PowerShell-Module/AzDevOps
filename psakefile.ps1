@@ -1,15 +1,16 @@
 $script:ModuleName = 'AzDevOps';
+$script:GithubOrg = 'Azure-Devops-PowerShell-Module'
 $script:Source = Join-Path $PSScriptRoot $ModuleName;
 $script:Output = Join-Path $PSScriptRoot output;
+$script:Docs = Join-Path $PSScriptRoot 'docs'
 $script:Destination = Join-Path $Output $ModuleName;
 $script:ModuleList = @('core', 'build', 'operations');
-$script:Assemblies = Join-Path $Destination assemblies;
 $script:ModulePath = "$Destination\$ModuleName.psm1";
 $script:ManifestPath = "$Destination\$ModuleName.psd1";
 $script:Imports = ('public', 'authentication\public', 'authentication\private', 'build\public', 'build\private', 'operations\public', 'operations\private', 'processes\public', 'processes\private', 'projects\public', 'projects\private', 'teams\public', 'teams\private');
-$script:PublicFunctions = ('authentication\public', 'build\public', 'operations\public', 'processes\public', 'projects\public', 'teams\public');
 $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
 $script:SourceId = [System.Guid]::NewGuid().Guid;
+$script:Repository = "https://github.com/$($script:GithubOrg)"
 
 Import-Module BuildHelpers;
 
@@ -20,22 +21,37 @@ Write-Output $script:Output
 Write-Output $script:ModulePath
 Write-Output $script:ManifestPath
 Write-Output $script:Imports
-Write-Output $script:PublicFunctions
 Write-Output $script:TestFile
 #>
 
 Task LocalUse -description "Use for local testing" -depends Clean, BuildManifest
-Task CIUSe -description "Use for pipeline deployments" -depends BuildModule, BuildManifest
+Task SetupModule -description "Package and Deploy module" -depends Clean, BuildManifest, CreateExternalHelp, CreateCabFile, CreateNuSpec, NugetPack
 
 Task Clean {
  $null = Remove-Item $Output -Recurse -ErrorAction Ignore
  $null = New-Item -Type Directory -Path $Destination
+ $Global:settings = Get-Content .\ado.token.json |ConvertFrom-Json;
+ foreach ($Name in ($Global:settings |Get-Member -MemberType NoteProperty |Select-Object -ExpandProperty Name))
+ {
+  $Org = $Global:settings.$Name;
+  $ExpirationDate = Get-Date($Org.Expiration);
+  $Today = (Get-Date(Get-Date -Format yyyy-MM-dd));
+  $DateDiff = New-TimeSpan -Start $Today -End $ExpirationDate;
+  if ($DateDiff.TotalDays -le 7)
+  {
+   Write-Host -ForegroundColor Red "Warning: $($Org.OrgName) Token Expires : $($Org.Expiration)";
+  } else
+  {
+   Write-Host -ForegroundColor Blue "Info: $($Org.OrgName) Token Expires in $($DateDiff.TotalDays) days"
+  }
+ }
 }
 
 Task BuildModule -description "Compile the Build Module" -depends clean, BuildNestedModules, BuildNestedManifests -action {
  $ModulePath = Join-Path $script:Source $script:ModuleName;
  $ModuleDestination = Join-Path $script:Destination $script:ModuleName;
  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
+ [void]$stringbuilder.AppendLine( "# .ExternalHelp AzDevOps-help.xml" )
  [void]$stringbuilder.AppendLine( "Write-Verbose 'Importing from [$($ModulePath)]'" )
  if (Test-Path "$($ModulePath)")
  {
@@ -145,4 +161,73 @@ Task PesterTest -description "Test module" -action {
  {
   Write-Error "Failed [$($TestResults.FailedCount)] Pester tests"
  }
+}
+
+Task UpdateHelp -Description "Update the help files" -depends Clean, BuildManifest -Action {
+ Import-Module -Name "$($script:Output)\$($script:ModuleName)" -Scope Global -force;
+ New-MarkdownHelp -Module $script:ModuleName -AlphabeticParamsOrder -UseFullTypeName -WithModulePage -OutputFolder $script:Docs -ErrorAction SilentlyContinue
+ Update-MarkdownHelp -Path $script:Docs -AlphabeticParamsOrder -UseFullTypeName
+}
+
+Task CreateExternalHelp -Description "Create external help file" -depends UpdateHelp -Action {
+ New-ExternalHelp -Path $script:Docs -OutputPath "$($script:Output)\$($script:ModuleName)" -Force
+}
+
+Task UpdateReadme -Description "Update the README file" -depends Clean, BuildManifest -Action {
+ $readMe = Get-Item .\README.md
+
+ $TableHeaders = "| Latest Version | PowerShell Gallery | Issues | License | Discord |"
+ $Columns = "|-----------------|----------------|----------------|----------------|----------------|"
+ $VersionBadge = "[![Latest Version](https://img.shields.io/github/v/tag/$($script:GithubOrg)/$($script:ModuleName))]($($script:Repository)/$($script:ModuleName)/tags)"
+ $GalleryBadge = "[![Powershell Gallery](https://img.shields.io/powershellgallery/dt/$($script:ModuleName))](https://www.powershellgallery.com/packages/PoshMongo)"
+ $IssueBadge = "[![GitHub issues](https://img.shields.io/github/issues/$($script:GithubOrg)/$($script:ModuleName))]($($script:Repository)/$($script:ModuleName)/issues)"
+ $LicenseBadge = "[![GitHub license](https://img.shields.io/github/license/$($script:GithubOrg)/$($script:ModuleName))]($($script:Repository)/$($script:ModuleName)/blob/master/LICENSE)"
+ $DiscordBadge = "[![Discord Server](https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg)]($($DiscordChannel))"
+
+ if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name $script:Destination }
+
+ Write-Output $TableHeaders | Out-File $readMe.FullName -Force
+ Write-Output $Columns | Out-File $readMe.FullName -Append
+ Write-Output "| $($VersionBadge) | $($GalleryBadge) | $($IssueBadge) | $($LicenseBadge) | $($DiscordBadge) |" | Out-File $readMe.FullName -Append
+
+ Get-Content "$($PSScriptRoot)\Overview.md" | Out-File $readMe.FullName -Append
+ Get-Content "$($script:Docs)\$($script:ModuleName).md" | Select-Object -Skip 8 | ForEach-Object { $_.Replace('(', '(Docs/') } | Out-File $readMe.FullName -Append
+ Write-Output "" | Out-File $readMe.FullName -Append
+}
+
+Task NewTaggedRelease -Description "Create a tagged release" -depends CreateModuleDirectory, CleanProject, BuildProject, CopyModuleFiles, PesterTest -Action {
+ if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name ".\Module\$($script:ModuleName).psd1" }
+ $Version = (Get-Module -Name $script:ModuleName | Select-Object -Property Version).Version.ToString()
+ git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
+ git push origin v$version
+}
+
+Task Post2Discord -Description "Post a message to discord" -Action {
+ $moduleName = 'PoshMongo'
+ $version = (Get-Module -Name $moduleName | Select-Object -Property Version).Version.ToString()
+ $Discord = Get-Content .\discord.poshmongo | ConvertFrom-Json
+ $Discord.message.content = "Version $($version) of $($moduleName) released. Please visit Github ($($Github)) or PowershellGallery ($($PoshGallery)) to download."
+ Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
+}
+
+
+Task CreateCabFile -Description "Create cab file for download" -Action {
+ New-ExternalHelpCab -CabFilesFolder "$($script:Output)\$($script:ModuleName)" -LandingPagePath "$($script:Docs)\$($script:ModuleName).md" -OutputFolder "$($script:Output)\cabs\"
+}
+
+Task CreateNuSpec -Description "Create NuSpec file for upload" -Action {
+ .\ConvertTo-NuSpec.ps1 -ManifestPath "$($script:Output)\$($script:ModuleName)\$($script:ModuleName).psd1" -DestinationFolder $script:Output
+ [xml]$nuspec = Get-Content "$($script:Output)\$($script:ModuleName).nuspec";
+ Write-Output " Removing nuspec dependencies"
+ $nuspec.package.metadata.RemoveChild($nuspec.package.metadata.dependencies) |Out-Null;
+ $nuspec.Save("$($script:Output)\$($script:ModuleName).nuspec");
+}
+
+Task NugetPack -Description "Pack the nuget file" -Action {
+ nuget pack "$($script:Output)\$($script:ModuleName).nuspec" -OutputDirectory $script:Output -verbosity detailed
+}
+
+Task NugetPush -Description "Push nuget to PowerShell Gallery" -Action {
+ $config = [xml](Get-Content .\nuget.config)
+ nuget push .\Module\*.nupkg -NonInteractive -ApiKey "$($config.configuration.apikeys.add.value)" -ConfigFile .\nuget.config
 }
