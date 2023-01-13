@@ -1,7 +1,7 @@
 function Get-ProjectProperty
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Get-AzDevOpsProjectProperty.md#get-azdevopsprojectproperty',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Get-AdoProjectProperty.md#get-adoprojectproperty',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

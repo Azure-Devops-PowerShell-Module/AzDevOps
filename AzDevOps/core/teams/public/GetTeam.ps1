@@ -1,7 +1,7 @@
 function Get-Team
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Get-AzDevOpsTeam.md#get-azdevopsteam',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Get-AdoTeam.md#get-adoteam',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

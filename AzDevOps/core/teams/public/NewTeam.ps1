@@ -1,7 +1,7 @@
 function New-Team
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/New-AzDevOpsTeam.md#new-azdevopsteam',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/New-AdoTeam.md#new-adoteam',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

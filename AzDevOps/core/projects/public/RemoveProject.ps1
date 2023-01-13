@@ -1,7 +1,7 @@
 function Remove-Project
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Remove-AzDevOpsProject.md#remove-azdevopsproject',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Remove-AdoProject.md#remove-Adoproject',
   PositionalBinding = $true)]
  [OutputType([String])]
  param (

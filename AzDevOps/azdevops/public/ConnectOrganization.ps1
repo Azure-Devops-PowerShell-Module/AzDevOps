@@ -1,7 +1,7 @@
 function Connect-Organization
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/core/blob/master/docs/Connect-AzDevOpsOrganization.md#connect-azdevopsOrganization',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/core/blob/master/docs/Connect-AdoOrganization.md#connect-adoorganization',
   PositionalBinding = $true)]
  [OutputType([String])]
  param (

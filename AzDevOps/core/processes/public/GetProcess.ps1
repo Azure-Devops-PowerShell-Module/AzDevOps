@@ -1,7 +1,7 @@
 function Get-Process
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/processes/blob/master/docs/Get-AzDevOpsProcess.md#get-azdevopsprocess',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/processes/blob/master/docs/Get-AdoProcess.md#get-adoprocess',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

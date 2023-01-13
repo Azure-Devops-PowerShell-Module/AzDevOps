@@ -1,7 +1,7 @@
 function Remove-Team
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Remove-AzDevOpsTeam.md#remove-azdevopsteam',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Remove-AdoTeam.md#remove-adoteam',
   PositionalBinding = $true)]
  [OutputType([string])]
  param (

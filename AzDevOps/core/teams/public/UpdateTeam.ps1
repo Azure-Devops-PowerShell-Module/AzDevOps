@@ -1,7 +1,7 @@
 function Update-Team
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Update-AzDevOpsTeam.md#update-azdevopsteam',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/teams/blob/master/docs/Update-AdoTeam.md#update-adoteam',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

@@ -1,7 +1,7 @@
 function Update-Project
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Update-AzDevOpsProject.md#update-azdevopsproject',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/Update-AdoProject.md#update-adoproject',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

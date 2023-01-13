@@ -1,7 +1,7 @@
 function New-Project
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/New-AzDevOpsProject.md#new-azdevopsproject',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/projects/blob/master/docs/New-AdoProject.md#new-Adoproject',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

@@ -1,7 +1,7 @@
 function Get-Operation
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/core/blob/master/docs/Get-AzDevOpsOperation.md#get-azdevopsoperation',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/core/blob/master/docs/Get-AdoOperation.md#get-adooperation',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
