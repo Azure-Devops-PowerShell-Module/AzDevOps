@@ -1,7 +1,7 @@
 function Get-BuildDefinition
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AzDevOpsBuildDefinition.md#get-azdevopsbuilddefinition',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AdoBuildDefinition.md#get-Adobuilddefinition',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
@@ -12,6 +12,9 @@ function Get-BuildDefinition
   [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
   [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
   [int]$DefinitionId,
+  [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
+  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
+  [int]$Revision,
   [Parameter(Mandatory = $false)]
   [ValidateSet('5.1', '7.1-preview.7')]
   [string]$ApiVersion = '7.1-preview.7'
@@ -27,7 +30,8 @@ function Get-BuildDefinition
   {
    Write-Verbose " ProjectId         : $($ProjectId)";
   }
-  Write-Verbose " DefinitionId      : $($BuildId)";
+  Write-Verbose " DefinitionId      : $($DefinitionId)";
+  Write-Verbose " Revision          : $($Revision)";
   Write-Verbose " ApiVersion        : $($ApiVersion)";
   try
   {
@@ -45,7 +49,13 @@ function Get-BuildDefinition
     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions?api-version=$($ApiVersion)";
     if ($DefinitionId)
     {
-     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions/$($DefinitionId)?api-version=$($ApiVersion)"
+     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/definitions/$($DefinitionId)";
+     if ($Revision)
+     {
+      $Uri = $Uri + "?revision=$($Revision)&api-version=$($ApiVersion)";
+     } else {
+      $Uri = $Uri + "?api-version=$($ApiVersion)"
+     }
      return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
     else

@@ -1,7 +1,7 @@
 function New-BuildFolder
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/New-AzDevOpsBuildFolder.md#new-azdevopsbuildfolder',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/New-AdoBuildFolder.md#new-adobuildfolder',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

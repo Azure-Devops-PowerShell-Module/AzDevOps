@@ -1,7 +1,7 @@
 function Remove-Build
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Remove-AzDevOpsBuild.md#remove-azdevopsbuild',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Remove-AdoBuild.md#remove-adobuild',
   PositionalBinding = $true)]
  [OutputType([string])]
  param (

@@ -1,7 +1,7 @@
 function Start-Build
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Start-AzDevOpsBuild.md#start-azdevopsbuild',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Start-AdoBuild.md#start-adobuild',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

@@ -1,7 +1,7 @@
 function Remove-BuildFolder
 {
  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High',
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Remove-AzDevOpsBuildFolder.md#remove-azdevopsbuildfolder',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Remove-AdoBuildFolder.md#remove-adobuildfolder',
   PositionalBinding = $true)]
  [OutputType([string])]
  param (

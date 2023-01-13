@@ -1,7 +1,7 @@
 function Get-BuildFolder
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AzDevOpsBuildFolder.md#get-azdevopsbuildfolder',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AdoBuildFolder.md#get-adobuildfolder',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

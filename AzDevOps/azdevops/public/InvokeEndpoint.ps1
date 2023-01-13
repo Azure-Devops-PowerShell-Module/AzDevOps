@@ -1,7 +1,7 @@
 function Invoke-Endpoint
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Invoke-RestMethod.md#invoke-restmethod',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Invoke-AdoEndpoint.md#invoke-adoendpoint',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (

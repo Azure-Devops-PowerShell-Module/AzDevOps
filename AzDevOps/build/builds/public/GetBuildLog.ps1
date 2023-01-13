@@ -1,7 +1,7 @@
 function Get-BuildLog
 {
  [CmdletBinding(
-  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AzDevOpsBuildLog.md#get-azdevopsbuildlog',
+  HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/build/blob/master/docs/Get-AdoBuildLog.md#get-adobuildlog',
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
