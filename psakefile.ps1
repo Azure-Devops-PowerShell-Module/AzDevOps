@@ -30,8 +30,8 @@ Task SetupModule -description "Package and Deploy module" -depends Clean, BuildM
 Task Clean {
  $null = Remove-Item $Output -Recurse -ErrorAction Ignore
  $null = New-Item -Type Directory -Path $Destination
- $Global:settings = Get-Content .\ado.token.json |ConvertFrom-Json;
- foreach ($Name in ($Global:settings |Get-Member -MemberType NoteProperty |Select-Object -ExpandProperty Name))
+ $Global:settings = Get-Content .\ado.token.json | ConvertFrom-Json;
+ foreach ($Name in ($Global:settings | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name))
  {
   $Org = $Global:settings.$Name;
   $ExpirationDate = Get-Date($Org.Expiration);
@@ -40,7 +40,8 @@ Task Clean {
   if ($DateDiff.TotalDays -le 7)
   {
    Write-Host -ForegroundColor Red "Warning: $($Org.OrgName) Token Expires : $($Org.Expiration)";
-  } else
+  }
+  else
   {
    Write-Host -ForegroundColor Blue "Info: $($Org.OrgName) Token Expires in $($DateDiff.TotalDays) days"
   }
@@ -70,13 +71,13 @@ Task BuildModule -description "Compile the Build Module" -depends clean, BuildNe
 }
 
 Task BuildManifest -description "Compile the Module Manifest" -depends BuildModule -action {
- $ModulePath =  $script:Source #$script:ModuleName;
+ $ModulePath = $script:Source #$script:ModuleName;
  $ModuleDestination = $script:Destination;
  $CurrentManifestPath = "$($ModulePath)\$($script:ModuleName).psd1"
  Write-Output "$($script:Source)"
  Write-Output "  Update [$ModuleDestination]"
  $Functions = @()
- $NestedModules = $ModuleList |ForEach-Object {"$($_)\$($_).psd1"}
+ $NestedModules = $ModuleList | ForEach-Object { "$($_)\$($_).psd1" }
  foreach ($Folder in (Get-ChildItem -Path $ModulePath -Directory))
  {
   if (Test-Path -Path $Folder.FullName)
@@ -219,7 +220,7 @@ Task CreateNuSpec -Description "Create NuSpec file for upload" -Action {
  .\ConvertTo-NuSpec.ps1 -ManifestPath "$($script:Output)\$($script:ModuleName)\$($script:ModuleName).psd1" -DestinationFolder $script:Output
  [xml]$nuspec = Get-Content "$($script:Output)\$($script:ModuleName).nuspec";
  Write-Output " Removing nuspec dependencies"
- $nuspec.package.metadata.RemoveChild($nuspec.package.metadata.dependencies) |Out-Null;
+ $nuspec.package.metadata.RemoveChild($nuspec.package.metadata.dependencies) | Out-Null;
  $nuspec.Save("$($script:Output)\$($script:ModuleName).nuspec");
 }
 
