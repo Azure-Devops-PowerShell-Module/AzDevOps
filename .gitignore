@@ -352,3 +352,6 @@ MigrationBackup/
 ado.connection.json
 AzDevOps.nuspec
 ado.rseng.token.json
+discord.poshmongo
+nuget.config
+ado.token.json
