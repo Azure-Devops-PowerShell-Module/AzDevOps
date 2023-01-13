@@ -170,7 +170,7 @@ Task UpdateHelp -Description "Update the help files" -depends Clean, BuildManife
  Update-MarkdownHelp -Path $script:Docs -AlphabeticParamsOrder -UseFullTypeName
 }
 
-Task CreateExternalHelp -Description "Create external help file" -depends UpdateHelp -Action {
+Task CreateExternalHelp -Description "Create external help file" -Action {
  New-ExternalHelp -Path $script:Docs -OutputPath "$($script:Output)\$($script:ModuleName)" -Force
 }
 
