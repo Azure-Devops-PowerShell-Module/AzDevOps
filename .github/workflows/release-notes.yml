@@ -19,5 +19,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.release_notes_pat }}
           OUTPUT_FOLDER: temp_release_notes
-          FILENAME: ReleaseNotes.md
+          FILENAME: RELEASE
           USE_MILESTONE_TITLE: "true"
