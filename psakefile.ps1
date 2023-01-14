@@ -11,6 +11,7 @@ $script:Imports = ('public', 'authentication\public', 'authentication\private', 
 $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
 $script:SourceId = [System.Guid]::NewGuid().Guid;
 $script:Repository = "https://github.com/$($script:GithubOrg)"
+$script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
 
 Import-Module BuildHelpers;
 
@@ -24,8 +25,14 @@ Write-Output $script:Imports
 Write-Output $script:TestFile
 #>
 
-Task LocalUse -description "Use for local testing" -depends Clean, BuildManifest
-Task SetupModule -description "Package and Deploy module" -depends Clean, BuildManifest, CreateExternalHelp, CreateCabFile, CreateNuSpec, NugetPack
+Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest
+
+Task Build -depends LocalUse, PesterTest
+Task Package -depends CreateExternalHelp, CreateCabFile
+Task Deploy -depends NugetPush
+
+Task SetupModule -description "Package and Deploy module" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest, PesterTest, CreateExternalHelp, CreateCabFile, CreateNuSpec, NugetPack, NugetPush
+Task PostSetup -Description "Run After Deployment" -depends UpdateReadme, Post2Discord
 
 Task Clean {
  $null = Remove-Item $Output -Recurse -ErrorAction Ignore
@@ -48,7 +55,7 @@ Task Clean {
  }
 }
 
-Task BuildModule -description "Compile the Build Module" -depends clean, BuildNestedModules, BuildNestedManifests -action {
+Task BuildModule -description "Compile the Build Module" -action {
  $ModulePath = Join-Path $script:Source $script:ModuleName;
  $ModuleDestination = Join-Path $script:Destination $script:ModuleName;
  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
@@ -70,7 +77,7 @@ Task BuildModule -description "Compile the Build Module" -depends clean, BuildNe
  Set-Content -Path  "$($ModuleDestination).psm1" -Value $stringbuilder.ToString()
 }
 
-Task BuildManifest -description "Compile the Module Manifest" -depends BuildModule -action {
+Task BuildManifest -description "Compile the Module Manifest" -action {
  $ModulePath = $script:Source #$script:ModuleName;
  $ModuleDestination = $script:Destination;
  $CurrentManifestPath = "$($ModulePath)\$($script:ModuleName).psd1"
@@ -164,7 +171,7 @@ Task PesterTest -description "Test module" -action {
  }
 }
 
-Task UpdateHelp -Description "Update the help files" -depends Clean, BuildManifest -Action {
+Task UpdateHelp -Description "Update the help files" -Action {
  Import-Module -Name "$($script:Output)\$($script:ModuleName)" -Scope Global -force;
  New-MarkdownHelp -Module $script:ModuleName -AlphabeticParamsOrder -UseFullTypeName -WithModulePage -OutputFolder $script:Docs -ErrorAction SilentlyContinue
  Update-MarkdownHelp -Path $script:Docs -AlphabeticParamsOrder -UseFullTypeName
@@ -174,7 +181,7 @@ Task CreateExternalHelp -Description "Create external help file" -Action {
  New-ExternalHelp -Path $script:Docs -OutputPath "$($script:Output)\$($script:ModuleName)" -Force
 }
 
-Task UpdateReadme -Description "Update the README file" -depends Clean, BuildManifest -Action {
+Task UpdateReadme -Description "Update the README file" -Action {
  $readMe = Get-Item .\README.md
 
  $TableHeaders = "| Latest Version | PowerShell Gallery | Issues | License | Discord |"
@@ -196,21 +203,20 @@ Task UpdateReadme -Description "Update the README file" -depends Clean, BuildMan
  Write-Output "" | Out-File $readMe.FullName -Append
 }
 
-Task NewTaggedRelease -Description "Create a tagged release" -depends CreateModuleDirectory, CleanProject, BuildProject, CopyModuleFiles, PesterTest -Action {
- if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name ".\Module\$($script:ModuleName).psd1" }
+Task NewTaggedRelease -Description "Create a tagged release" -Action {
+ if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name "$($script:Output)\$($script:ModuleName)" }
  $Version = (Get-Module -Name $script:ModuleName | Select-Object -Property Version).Version.ToString()
- git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
- git push origin v$version
+ git status
+ #git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
+ #git push origin v$version
 }
 
 Task Post2Discord -Description "Post a message to discord" -Action {
- $moduleName = 'PoshMongo'
- $version = (Get-Module -Name $moduleName | Select-Object -Property Version).Version.ToString()
+ $version = (Get-Module -Name $($script:ModuleName) | Select-Object -Property Version).Version.ToString()
  $Discord = Get-Content .\discord.poshmongo | ConvertFrom-Json
- $Discord.message.content = "Version $($version) of $($moduleName) released. Please visit Github ($($Github)) or PowershellGallery ($($PoshGallery)) to download."
+ $Discord.message.content = "Version $($version) of $($script:ModuleName) released. Please visit Github ($($script:Repository)/$($script:ModuleName)) or PowershellGallery ($($PoshGallery)) to download."
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
-
 
 Task CreateCabFile -Description "Create cab file for download" -Action {
  New-ExternalHelpCab -CabFilesFolder "$($script:Output)\$($script:ModuleName)" -LandingPagePath "$($script:Docs)\$($script:ModuleName).md" -OutputFolder "$($script:Output)\cabs\"
@@ -229,6 +235,14 @@ Task NugetPack -Description "Pack the nuget file" -Action {
 }
 
 Task NugetPush -Description "Push nuget to PowerShell Gallery" -Action {
- $config = [xml](Get-Content .\nuget.config)
- nuget push .\Module\*.nupkg -NonInteractive -ApiKey "$($config.configuration.apikeys.add.value)" -ConfigFile .\nuget.config
+ $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config")
+ nuget push "$($script:Output)\*.nupkg" -NonInteractive -ApiKey "$($config.configuration.apikeys.add.value)" -ConfigFile "$($PSScriptRoot)\nuget.config"
+}
+
+Task PublishModule -Description "Publish module to PowerShell Gallery" -Action {
+ $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
+ $LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
+
+ Publish-Module -Path $script:Destination -NuGetApiKey "$($config.configuration.apikeys.add.value)" -LicenseUri $LicenseUri
+
 }
