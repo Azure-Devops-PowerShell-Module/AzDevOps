@@ -32,7 +32,6 @@ What's changed:
    8. Remove-BuildFolder
 5. API versions have been updated
 6. Updated documentaiton
-7. Create Tests
 
 --
 
