@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+output/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -348,3 +349,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+ado.connection.json
+AzDevOps.nuspec
+ado.rseng.token.json
+discord.poshmongo
+nuget.config
+ado.token.json
