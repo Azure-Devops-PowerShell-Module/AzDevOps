@@ -228,7 +228,7 @@ Task Post2Discord -Description "Post a message to discord" -Action {
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
-Task ReleaseNotes -Action {
+Task ReleaseNotes "Create release notes file for module manifest" -Action {
  $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
  $Credential = New-Credential -Username ignoreme -Password $Github.Token
  Set-GitHubAuthentication -Credential $Credential
@@ -252,13 +252,7 @@ Task ReleaseNotes -Action {
  Out-File -FilePath "$($PSScriptRoot)\RELEASE.md" -InputObject $stringbuilder.ToString() -Encoding ascii -Force
 }
 
-Task InstallMarkdig -Action {
- nuget install Markdig -Source "https://api.nuget.org/v3/index.json" -outputdirectory "$($script:Output)\MarkDig"
- $Folder = (Get-ChildItem -Path "$($script:Output)\MarkDig\Markdig*").FullName
- Add-Type -Path (Get-Item "$($Folder)\lib\net6.0\Markdig.dll").FullName
-}
-
-Task CheckBranch -Action {
+Task CheckBranch "A test that should fail if we deploy while not on master" -Action {
  $branch = git branch --show-current
  if ($branch -ne $script:DeployBranch)
  {
@@ -267,7 +261,7 @@ Task CheckBranch -Action {
  }
 }
 
-Task PublishModule -Description "Publish module to PowerShell Gallery" -depends InstallMarkdig -Action {
+Task PublishModule -Description "Publish module to PowerShell Gallery" -Action {
  $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
  $Parameters = @{
