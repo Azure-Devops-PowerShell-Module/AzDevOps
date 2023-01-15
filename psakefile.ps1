@@ -228,36 +228,48 @@ Task Post2Discord -Description "Post a message to discord" -Action {
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
-Task ReleaseNotes "Create release notes file for module manifest" -Action {
+Task ReleaseNotes -Description "Create release notes file for module manifest" -Action {
  $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
  $Credential = New-Credential -Username ignoreme -Password $Github.Token
  Set-GitHubAuthentication -Credential $Credential
- $Milestone = (Get-GitHubMilestone -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -State Closed |Sort-Object -Property ClosedAt)[0]
- [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
- [void]$stringbuilder.AppendLine( "# $($Milestone.title)" )
- [void]$stringbuilder.AppendLine( "$($Milestone.description)" )
- $i = Get-GitHubIssue -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -RepositoryType All -Filter All -State Closed -MilestoneNumber $Milestone.Number;
- $headings = $i | ForEach-Object { $_.Labels.Name } | Sort-Object -Unique;
- foreach ($heading in $headings)
+ $Milestone = (Get-GitHubMilestone -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -State Closed | Sort-Object -Property ClosedAt)[0]
+ if ($Milestone)
  {
-  [void]$stringbuilder.AppendLine( "" )
-  [void]$stringbuilder.AppendLine( "## $($heading.ToUpper())" )
-  [void]$stringbuilder.AppendLine( "" )
-  $issues = $i | ForEach-Object { if ($_.Labels.Name -eq $Heading) { $_ } }
-  foreach ($issue in $issues)
+  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
+  [void]$stringbuilder.AppendLine( "# $($Milestone.title)" )
+  [void]$stringbuilder.AppendLine( "$($Milestone.description)" )
+  $i = Get-GitHubIssue -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -RepositoryType All -Filter All -State Closed -MilestoneNumber $Milestone.Number;
+  $headings = $i | ForEach-Object { $_.Labels.Name } | Sort-Object -Unique;
+  foreach ($heading in $headings)
   {
-   [void]$stringbuilder.AppendLine( "* $($issue.title) #$($issue.issuenumber)" )
+   [void]$stringbuilder.AppendLine( "" )
+   [void]$stringbuilder.AppendLine( "## $($heading.ToUpper())" )
+   [void]$stringbuilder.AppendLine( "" )
+   $issues = $i | ForEach-Object { if ($_.Labels.Name -eq $Heading) { $_ } }
+   foreach ($issue in $issues)
+   {
+    [void]$stringbuilder.AppendLine( "* $($issue.title) #$($issue.issuenumber)" )
+   }
   }
+  Out-File -FilePath "$($PSScriptRoot)\RELEASE.md" -InputObject $stringbuilder.ToString() -Encoding ascii -Force
  }
- Out-File -FilePath "$($PSScriptRoot)\RELEASE.md" -InputObject $stringbuilder.ToString() -Encoding ascii -Force
 }
 
-Task CheckBranch "A test that should fail if we deploy while not on master" -Action {
+Task CheckBranch -Description "A test that should fail if we deploy while not on master" -Action {
  $branch = git branch --show-current
  if ($branch -ne $script:DeployBranch)
  {
-  Write-Host "You are not on the deployment branch: $($script:DeployBranch)"
-  throw "Wrong Branch"
+  [System.Net.WebSockets.WebSocketException]$Exception = "You are not on the deployment branch: $($script:DeployBranch)"
+  [string]$ErrorId = "Git.WrongBranch"
+  [System.Management.Automation.ErrorCategory]$Category = [System.Management.Automation.ErrorCategory]::InvalidOperation
+  $PSCmdlet.ThrowTerminatingError(
+   [System.Management.Automation.ErrorRecord]::new(
+    $Exception,
+    $ErrorId,
+    $Category,
+    $null
+   )
+  )
  }
 }
 
@@ -265,7 +277,7 @@ Task PublishModule -Description "Publish module to PowerShell Gallery" -Action {
  $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
  $Parameters = @{
-  Path = $script:Destination
+  Path        = $script:Destination
   NuGetApiKey = "$($config.configuration.apikeys.add.value)"
  }
  Publish-Module @Parameters;
