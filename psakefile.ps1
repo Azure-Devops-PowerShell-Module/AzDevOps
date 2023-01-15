@@ -14,6 +14,7 @@ $script:Repository = "https://github.com/$($script:GithubOrg)"
 $script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
 
 Import-Module BuildHelpers;
+Import-Module PowerShellForGitHub;
 
 <#
 Write-Output $script:ModuleName
@@ -29,10 +30,8 @@ Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedMo
 
 Task Build -depends LocalUse, PesterTest
 Task Package -depends CreateExternalHelp, CreateCabFile
-Task Deploy -depends ReleaseNotes
+Task Deploy -depends ReleaseNotes, PublishModule, NewTaggedRelease, Post2Discord
 
-Task SetupModule -description "Package and Deploy module" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest, PesterTest, CreateExternalHelp, CreateCabFile, CreateNuSpec, NugetPack, NugetPush
-Task PostSetup -Description "Run After Deployment" -depends UpdateReadme, Post2Discord
 
 Task Clean {
  $null = Remove-Item $Output -Recurse -ErrorAction Ignore
@@ -181,6 +180,10 @@ Task CreateExternalHelp -Description "Create external help file" -Action {
  New-ExternalHelp -Path $script:Docs -OutputPath "$($script:Output)\$($script:ModuleName)" -Force
 }
 
+Task CreateCabFile -Description "Create cab file for download" -Action {
+ New-ExternalHelpCab -CabFilesFolder "$($script:Output)\$($script:ModuleName)" -LandingPagePath "$($script:Docs)\$($script:ModuleName).md" -OutputFolder "$($PSScriptRoot)\cabs\"
+}
+
 Task UpdateReadme -Description "Update the README file" -Action {
  $readMe = Get-Item .\README.md
 
@@ -204,11 +207,17 @@ Task UpdateReadme -Description "Update the README file" -Action {
 }
 
 Task NewTaggedRelease -Description "Create a tagged release" -Action {
+ $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
+ $Credential = New-Credential -Username ignoreme -Password $Github.Token
+ Set-GitHubAuthentication -Credential $Credential
  if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name "$($script:Output)\$($script:ModuleName)" }
  $Version = (Get-Module -Name $script:ModuleName | Select-Object -Property Version).Version.ToString()
- git status
- #git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
- #git push origin v$version
+ git add .
+ git commit . -m "Updated ExternalHelp for $($Version) Release"
+ git push
+ git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
+ git push origin v$version
+ New-GitHubRelease -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -Tag "v$($Version)" -Name $Version
 }
 
 Task Post2Discord -Description "Post a message to discord" -Action {
@@ -218,9 +227,6 @@ Task Post2Discord -Description "Post a message to discord" -Action {
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
-Task CreateCabFile -Description "Create cab file for download" -Action {
- New-ExternalHelpCab -CabFilesFolder "$($script:Output)\$($script:ModuleName)" -LandingPagePath "$($script:Docs)\$($script:ModuleName).md" -OutputFolder "$($script:Output)\cabs\"
-}
 
 Task CreateNuSpec -Description "Create NuSpec file for upload" -Action {
  .\ConvertTo-NuSpec.ps1 -ManifestPath "$($script:Output)\$($script:ModuleName)\$($script:ModuleName).psd1" -DestinationFolder $script:Output
