@@ -4,10 +4,9 @@ $script:Source = Join-Path $PSScriptRoot $ModuleName;
 $script:Output = Join-Path $PSScriptRoot output;
 $script:Docs = Join-Path $PSScriptRoot 'docs'
 $script:Destination = Join-Path $Output $ModuleName;
-$script:ModuleList = @('core', 'build', 'operations');
+$script:ModuleList = @('core', 'build', 'operations','git');
 $script:ModulePath = "$Destination\$ModuleName.psm1";
 $script:ManifestPath = "$Destination\$ModuleName.psd1";
-$script:Imports = ('public', 'authentication\public', 'authentication\private', 'build\public', 'build\private', 'operations\public', 'operations\private', 'processes\public', 'processes\private', 'projects\public', 'projects\private', 'teams\public', 'teams\private');
 $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
 $script:SourceId = [System.Guid]::NewGuid().Guid;
 $script:Repository = "https://github.com/$($script:GithubOrg)"
@@ -23,7 +22,6 @@ Write-Output $script:Source
 Write-Output $script:Output
 Write-Output $script:ModulePath
 Write-Output $script:ManifestPath
-Write-Output $script:Imports
 Write-Output $script:TestFile
 #>
 
