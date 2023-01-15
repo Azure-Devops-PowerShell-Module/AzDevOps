@@ -272,7 +272,7 @@ Task ReleaseNotes -Action {
 
 Task InstallMarkdig -Action {
  nuget install Markdig -Source "https://api.nuget.org/v3/index.json" -outputdirectory "$($script:Output)\MarkDig"
- $Folder = (Get-ChildItem -Path "$script:Output\Markdig*").FullName
+ $Folder = (Get-ChildItem -Path "$($script:Output)\Markdig*").FullName
  Add-Type -Path (Get-Item "$($Folder)\lib\net6.0\Markdig.dll").FullName
 }
 
