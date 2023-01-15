@@ -29,7 +29,7 @@ Write-Output $script:TestFile
 Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest
 
 Task Build -depends LocalUse, PesterTest
-Task Package -depends CreateExternalHelp, CreateCabFile
+Task Package -depends CreateExternalHelp, CreateCabFile, UpdateReadme
 Task Deploy -depends ReleaseNotes, PublishModule, NewTaggedRelease, Post2Discord
 
 
