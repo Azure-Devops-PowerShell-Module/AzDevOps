@@ -96,7 +96,7 @@
   PSData = @{
 
    # Tags applied to this module. These help with module discovery in online galleries.
-   # Tags = @()
+   Tags = @("PowerShell","Azure DevOps")
 
    # A URL to the license for this module.
    LicenseUri   = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/LICENSE'
@@ -108,7 +108,7 @@
    IconUri      = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/logo.png?raw=true'
 
    # ReleaseNotes of this module
-   ReleaseNotes = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/CHANGELOG.md'
+   ReleaseNotes = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/RELEASE.md'
 
    # Prerelease string of this module
    # Prerelease = ''
