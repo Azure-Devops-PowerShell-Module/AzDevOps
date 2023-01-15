@@ -29,7 +29,7 @@ Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedMo
 
 Task Build -depends LocalUse, PesterTest
 Task Package -depends CreateExternalHelp, CreateCabFile
-Task Deploy -depends NugetPush
+Task Deploy -depends ReleaseNotes
 
 Task SetupModule -description "Package and Deploy module" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest, PesterTest, CreateExternalHelp, CreateCabFile, CreateNuSpec, NugetPack, NugetPush
 Task PostSetup -Description "Run After Deployment" -depends UpdateReadme, Post2Discord
@@ -239,10 +239,48 @@ Task NugetPush -Description "Push nuget to PowerShell Gallery" -Action {
  nuget push "$($script:Output)\*.nupkg" -NonInteractive -ApiKey "$($config.configuration.apikeys.add.value)" -ConfigFile "$($PSScriptRoot)\nuget.config"
 }
 
-Task PublishModule -Description "Publish module to PowerShell Gallery" -Action {
+Task ReleaseNotes -Action {
+ $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
+ $Credential = New-Credential -Username ignoreme -Password $Github.Token
+ Set-GitHubAuthentication -Credential $Credential
+ $Milestone = (Get-GitHubMilestone -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -State Closed |Sort-Object -Property ClosedAt)[0]
+ [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
+ [void]$stringbuilder.AppendLine( "# $($Milestone.title)" )
+ [void]$stringbuilder.AppendLine( "$($Milestone.description)" )
+ [void]$stringbuilder.AppendLine( "--" )
+ $i = Get-GitHubIssue -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -RepositoryType All -Filter All -State Closed -MilestoneNumber $Milestone.Number;
+ $headings = $i | ForEach-Object { $_.Labels.Name } | Sort-Object -Unique;
+ foreach ($heading in $headings)
+ {
+  [void]$stringbuilder.AppendLine( "" )
+  [void]$stringbuilder.AppendLine( "## $($heading.ToUpper())" )
+  [void]$stringbuilder.AppendLine( "" )
+  $issues = $i | ForEach-Object { if ($_.Labels.Name -eq $Heading) { $_ } }
+  foreach ($issue in $issues)
+  {
+   [void]$stringbuilder.AppendLine( "* $($issue.title) #$($issue.issuenumber)" )
+  }
+ }
+ Out-File -FilePath "$($PSScriptRoot)\RELEASE.md" -InputObject $stringbuilder.ToString() -Encoding ascii -Force
+}
+
+Task InstallMarkdig -Action {
+ nuget install Markdig -Source "https://api.nuget.org/v3/index.json" -outputdirectory "$($script:Output)\MarkDig"
+ $Folder = (Get-ChildItem -Path "$script:Output\Markdig*").FullName
+ Add-Type -Path (Get-Item "$($Folder)\lib\net6.0\Markdig.dll").FullName
+}
+
+Task PublishModule -Description "Publish module to PowerShell Gallery" -depends InstallMarkdig -Action {
  $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
- $LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
-
- Publish-Module -Path $script:Destination -NuGetApiKey "$($config.configuration.apikeys.add.value)" -LicenseUri $LicenseUri
-
+ [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+ $Parameters = @(
+  Name = $script:ModuleName
+  Path = $script:Destination
+  NuGetApiKey = "$($config.configuration.apikeys.add.value)"
+  LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
+  ReleaseNotes = [Markdig.Markdown]::ToHtml((Get-Content "$($PSScriptRoot)\RELEASE.md"))
+  Tag = "PowerShell","Azure DevOps"
+  IconUri = "$($script:Repository)/$($script:ModuleName)/raw/master/logo.png"
+ )
+ Publish-Module @Parameters;
 }
