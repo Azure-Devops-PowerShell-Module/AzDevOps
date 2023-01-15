@@ -280,13 +280,13 @@ Task PublishModule -Description "Publish module to PowerShell Gallery" -depends 
  $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
  $Parameters = @(
-  Name = $script:ModuleName
   Path = $script:Destination
   NuGetApiKey = "$($config.configuration.apikeys.add.value)"
   LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
   ReleaseNotes = [Markdig.Markdown]::ToHtml((Get-Content "$($PSScriptRoot)\RELEASE.md"))
   Tag = "PowerShell","Azure DevOps"
   IconUri = "$($script:Repository)/$($script:ModuleName)/raw/master/logo.png"
+  ProjectUri = "$($script:Repository)/$($script:ModuleName)"
  )
  Publish-Module @Parameters;
 }
