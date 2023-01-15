@@ -12,6 +12,7 @@ $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
 $script:SourceId = [System.Guid]::NewGuid().Guid;
 $script:Repository = "https://github.com/$($script:GithubOrg)"
 $script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
+$script:DeployBranch = 'master'
 
 Import-Module BuildHelpers;
 Import-Module PowerShellForGitHub;
@@ -30,7 +31,7 @@ Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedMo
 
 Task Build -depends LocalUse, PesterTest
 Task Package -depends CreateExternalHelp, CreateCabFile, UpdateReadme
-Task Deploy -depends ReleaseNotes, PublishModule, NewTaggedRelease, Post2Discord
+Task Deploy -depends CheckBranch, ReleaseNotes, PublishModule, NewTaggedRelease, Post2Discord
 
 
 Task Clean {
@@ -227,7 +228,6 @@ Task Post2Discord -Description "Post a message to discord" -Action {
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
-
 Task CreateNuSpec -Description "Create NuSpec file for upload" -Action {
  .\ConvertTo-NuSpec.ps1 -ManifestPath "$($script:Output)\$($script:ModuleName)\$($script:ModuleName).psd1" -DestinationFolder $script:Output
  [xml]$nuspec = Get-Content "$($script:Output)\$($script:ModuleName).nuspec";
@@ -274,6 +274,15 @@ Task InstallMarkdig -Action {
  nuget install Markdig -Source "https://api.nuget.org/v3/index.json" -outputdirectory "$($script:Output)\MarkDig"
  $Folder = (Get-ChildItem -Path "$($script:Output)\MarkDig\Markdig*").FullName
  Add-Type -Path (Get-Item "$($Folder)\lib\net6.0\Markdig.dll").FullName
+}
+
+Task CheckBranch -Action {
+ $branch = git branch --show-current
+ if ($branch -ne $script:DeployBranch)
+ {
+  Write-Host "You are not on the deployment branch: $($script:DeployBranch)"
+  throw "Wrong Branch"
+ }
 }
 
 Task PublishModule -Description "Publish module to PowerShell Gallery" -depends InstallMarkdig -Action {
