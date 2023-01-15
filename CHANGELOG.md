@@ -5,6 +5,17 @@ All changes to this module should be reflected in this document.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.1.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.1.0) - 2023-01-14
+
+This release adds the git endpoint as well as testing for module functions.
+
+What's changed:
+
+1. Git Endpoint Functions
+   1. Get-AdoRepository
+
+--
+
 ## [[2.0.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.0.0) - 2023-01-14
 
 This release is a complete overhaul of the module. Functions have been seperated into individual files and stored in
