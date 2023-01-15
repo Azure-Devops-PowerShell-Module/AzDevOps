@@ -1,7 +1,5 @@
 # v2.0.0
 
---
-
 ## DOCUMENTATION
 
 * Complete Documentation #26

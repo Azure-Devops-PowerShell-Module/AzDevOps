@@ -228,23 +228,6 @@ Task Post2Discord -Description "Post a message to discord" -Action {
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
-Task CreateNuSpec -Description "Create NuSpec file for upload" -Action {
- .\ConvertTo-NuSpec.ps1 -ManifestPath "$($script:Output)\$($script:ModuleName)\$($script:ModuleName).psd1" -DestinationFolder $script:Output
- [xml]$nuspec = Get-Content "$($script:Output)\$($script:ModuleName).nuspec";
- Write-Output " Removing nuspec dependencies"
- $nuspec.package.metadata.RemoveChild($nuspec.package.metadata.dependencies) | Out-Null;
- $nuspec.Save("$($script:Output)\$($script:ModuleName).nuspec");
-}
-
-Task NugetPack -Description "Pack the nuget file" -Action {
- nuget pack "$($script:Output)\$($script:ModuleName).nuspec" -OutputDirectory $script:Output -verbosity detailed
-}
-
-Task NugetPush -Description "Push nuget to PowerShell Gallery" -Action {
- $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config")
- nuget push "$($script:Output)\*.nupkg" -NonInteractive -ApiKey "$($config.configuration.apikeys.add.value)" -ConfigFile "$($PSScriptRoot)\nuget.config"
-}
-
 Task ReleaseNotes -Action {
  $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
  $Credential = New-Credential -Username ignoreme -Password $Github.Token
@@ -253,7 +236,6 @@ Task ReleaseNotes -Action {
  [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()
  [void]$stringbuilder.AppendLine( "# $($Milestone.title)" )
  [void]$stringbuilder.AppendLine( "$($Milestone.description)" )
- [void]$stringbuilder.AppendLine( "--" )
  $i = Get-GitHubIssue -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -RepositoryType All -Filter All -State Closed -MilestoneNumber $Milestone.Number;
  $headings = $i | ForEach-Object { $_.Labels.Name } | Sort-Object -Unique;
  foreach ($heading in $headings)
