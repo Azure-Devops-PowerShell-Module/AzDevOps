@@ -218,7 +218,7 @@ Task NewTaggedRelease -Description "Create a tagged release" -Action {
  git push
  git tag -a v$version -m "$($script:ModuleName) Version $($Version)"
  git push origin v$version
- New-GitHubRelease -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -Tag "v$($Version)" -Name $Version
+ New-GitHubRelease -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -Tag "v$($Version)" -Name "v$($Version)"
 }
 
 Task Post2Discord -Description "Post a message to discord" -Action {
@@ -291,11 +291,6 @@ Task PublishModule -Description "Publish module to PowerShell Gallery" -depends 
  $Parameters = @{
   Path = $script:Destination
   NuGetApiKey = "$($config.configuration.apikeys.add.value)"
-  LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
-  ReleaseNotes = [Markdig.Markdown]::ToHtml((Get-Content "$($PSScriptRoot)\RELEASE.md"))
-  Tag = "PowerShell","Azure DevOps"
-  IconUri = "$($script:Repository)/$($script:ModuleName)/raw/master/logo.png"
-  ProjectUri = "$($script:Repository)/$($script:ModuleName)"
  }
  Publish-Module @Parameters;
 }
