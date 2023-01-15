@@ -1,7 +1,6 @@
 | Latest Version | PowerShell Gallery | Issues | License | Discord |
 |-----------------|----------------|----------------|----------------|----------------|
 | [![Latest Version](https://img.shields.io/github/v/tag/Azure-Devops-PowerShell-Module/AzDevOps)](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/tags) | [![Powershell Gallery](https://img.shields.io/powershellgallery/dt/AzDevOps)](https://www.powershellgallery.com/packages/PoshMongo) | [![GitHub issues](https://img.shields.io/github/issues/Azure-Devops-PowerShell-Module/AzDevOps)](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues) | [![GitHub license](https://img.shields.io/github/license/Azure-Devops-PowerShell-Module/AzDevOps)](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/LICENSE) | [![Discord Server](https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg)]() |
-
 # About
 
 The AzDevOps project is designed to leverage the [Azure Devops Rest API](https://docs.microsoft.com/en-us/rest/api/azure/devops) through the use of PowerShell. Currently the modules are all written in PowerShell which should make the code easier to understand and modify as needed. The project will use [Semantic Versioning](https://semver.org/) for modules, these version numbers should also be reflected in the tags.
@@ -29,99 +28,99 @@ This is currently a work in progress, but we should be leveraging [pester](https
 ## Publishing
 
 The module will be available directly from [GitHub](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps), we are looking to create Tagged releases that are easy to download. Additionally the code will be available on the [PowerShell Gallery](https://www.powershellgallery.com/) for a more streamlined delivery.
-
 # AzDevOps Module
 
 ## Description
 
-{{ Fill in the Description }}
+This module provides the ability to manage and work with an Azure Devops organization.
 
 ## AzDevOps Cmdlets
 
 ### [Connect-AdoOrganization](Docs/Connect-AdoOrganization.md)
 
-{{ Fill in the Description }}
+This function will connect to Azure DevOps
 
 ### [Get-AdoBuild](Docs/Get-AdoBuild.md)
 
-{{ Fill in the Description }}
+Return one or more builds from a project
 
 ### [Get-AdoBuildDefinition](Docs/Get-AdoBuildDefinition.md)
 
-{{ Fill in the Description }}
+Gets a definition, optionally at a specific revision.
 
 ### [Get-AdoBuildFolder](Docs/Get-AdoBuildFolder.md)
 
-{{ Fill in the Description }}
+Gets a list of build definition folders
 
 ### [Get-AdoBuildLog](Docs/Get-AdoBuildLog.md)
 
-{{ Fill in the Description }}
+Gets the logs for a build
 
 ### [Get-AdoOperation](Docs/Get-AdoOperation.md)
 
-{{ Fill in the Description }}
+Gets an operation from the the operationId using the given pluginId.
 
 ### [Get-AdoProcess](Docs/Get-AdoProcess.md)
 
-{{ Fill in the Description }}
+Get one or more available processes
 
 ### [Get-AdoProject](Docs/Get-AdoProject.md)
 
-{{ Fill in the Description }}
+Get one or many projects from Azure DevOps
 
 ### [Get-AdoProjectProperty](Docs/Get-AdoProjectProperty.md)
 
-{{ Fill in the Description }}
+Get a collection of team project Property
 
 ### [Get-AdoTeam](Docs/Get-AdoTeam.md)
 
-{{ Fill in the Description }}
+Get a specific team
 
 ### [Get-AdoTeamMember](Docs/Get-AdoTeamMember.md)
 
-{{ Fill in the Description }}
+Get a list of members for a specific team.
 
 ### [Invoke-AdoEndpoint](Docs/Invoke-AdoEndpoint.md)
 
-{{ Fill in the Description }}
+Query Azure Devops
 
 ### [New-AdoBuildFolder](Docs/New-AdoBuildFolder.md)
 
-{{ Fill in the Description }}
+Creates a new folder
 
 ### [New-AdoProject](Docs/New-AdoProject.md)
 
-{{ Fill in the Description }}
+Queues a project to be created
 
 ### [New-AdoTeam](Docs/New-AdoTeam.md)
 
-{{ Fill in the Description }}
+Create a team in a team project
 
 ### [Remove-AdoBuild](Docs/Remove-AdoBuild.md)
 
-{{ Fill in the Description }}
+Deletes a build
 
 ### [Remove-AdoBuildFolder](Docs/Remove-AdoBuildFolder.md)
 
-{{ Fill in the Description }}
+Deletes a definition folder
 
 ### [Remove-AdoProject](Docs/Remove-AdoProject.md)
 
-{{ Fill in the Description }}
+Queues a project to be deleted
 
 ### [Remove-AdoTeam](Docs/Remove-AdoTeam.md)
 
-{{ Fill in the Description }}
+Delete a team.
 
 ### [Start-AdoBuild](Docs/Start-AdoBuild.md)
 
-{{ Fill in the Description }}
+Queues a build
 
 ### [Update-AdoProject](Docs/Update-AdoProject.md)
 
-{{ Fill in the Description }}
+Update Name, Description or Abbreviation of a project
 
 ### [Update-AdoTeam](Docs/Update-AdoTeam.md)
 
-{{ Fill in the Description }}
+Update a team's name and/or description
+
