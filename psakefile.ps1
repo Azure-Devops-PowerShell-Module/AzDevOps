@@ -279,14 +279,14 @@ Task InstallMarkdig -Action {
 Task PublishModule -Description "Publish module to PowerShell Gallery" -depends InstallMarkdig -Action {
  $config = [xml](Get-Content "$($PSScriptRoot)\nuget.config");
  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
- $Parameters = @(
-  Path = $script:Destination
+ $Parameters = @{
+  Path = $script:Destnation
   NuGetApiKey = "$($config.configuration.apikeys.add.value)"
   LicenseUri = "$($script:Repository)/$($script:ModuleName)/blob/master/LICENSE"
   ReleaseNotes = [Markdig.Markdown]::ToHtml((Get-Content "$($PSScriptRoot)\RELEASE.md"))
   Tag = "PowerShell","Azure DevOps"
   IconUri = "$($script:Repository)/$($script:ModuleName)/raw/master/logo.png"
   ProjectUri = "$($script:Repository)/$($script:ModuleName)"
- )
+ }
  Publish-Module @Parameters;
 }
