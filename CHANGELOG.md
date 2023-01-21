@@ -17,7 +17,7 @@ What's changed:
       1. See Github Issue [587](https://github.com/MicrosoftDocs/vsts-rest-api-specs/issues/587)
 2. Update API Version across functions [ADPM-7](https://pattontech.atlassian.net/browse/ADPM-7)
 
---
+---
 
 ## [[2.0.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.0.0) - 2023-01-14
 
@@ -47,7 +47,7 @@ What's changed:
 5. API versions have been updated
 6. Updated documentaiton
 
---
+---
 
 ## Unreleased
 
