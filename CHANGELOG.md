@@ -15,6 +15,7 @@ What's changed:
    1. Get-AdoRepository [ADPM-2](https://pattontech.atlassian.net/browse/ADPM-2)
    2. New-AdoRepository [ADPM-3](https://pattontech.atlassian.net/browse/ADPM-3)
       1. See Github Issue [587](https://github.com/MicrosoftDocs/vsts-rest-api-specs/issues/587)
+   3. Remove-AdoRepository [ADPM-5](https://pattontech.atlassian.net/browse/ADPM-5)
 2. Update API Version across functions [ADPM-7](https://pattontech.atlassian.net/browse/ADPM-7)
 
 ---
