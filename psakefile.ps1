@@ -4,26 +4,49 @@ $script:Source = Join-Path $PSScriptRoot $ModuleName;
 $script:Output = Join-Path $PSScriptRoot output;
 $script:Docs = Join-Path $PSScriptRoot 'docs'
 $script:Destination = Join-Path $Output $ModuleName;
-$script:ModuleList = @('core', 'build', 'operations','git');
+$script:ModuleList = @('core', 'build', 'operations', 'git');
 $script:ModulePath = "$Destination\$ModuleName.psm1";
 $script:ManifestPath = "$Destination\$ModuleName.psd1";
 $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');
-$script:SourceId = [System.Guid]::NewGuid().Guid;
 $script:Repository = "https://github.com/$($script:GithubOrg)"
 $script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
 $script:DeployBranch = 'master'
 
-Import-Module BuildHelpers;
-Import-Module PowerShellForGitHub;
+$BuildHelpers = Get-Module -ListAvailable | Where-Object -Property Name -eq BuildHelpers;
+if ($BuildHelpers)
+{
+ Write-Host -ForegroundColor Blue "Info: BuildHelpers Version $($BuildHelpers.Version) Found";
+ Write-Host -ForegroundColor Blue "Info: This automation built with BuildHelpers Version 2.0.16";
+ Import-Module BuildHelpers;
+}
+else
+{
+ throw "Please Install-Module -Name BuildHelpers";
+}
+$PowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
+if ($PowerShellForGitHub)
+{
+ Write-Host -ForegroundColor Blue "Info: PowerShellForGitHub Version $($PowerShellForGitHub.Version) Found";
+ Write-Host -ForegroundColor Blue "Info: This automation built with PowerShellForGitHub Version 0.16.1";
+ Import-Module PowerShellForGitHub;
+}
+else
+{
+ throw "Please Install-Module -Name PowerShellForGitHub";
+}
 
-<#
-Write-Output $script:ModuleName
-Write-Output $script:Source
-Write-Output $script:Output
-Write-Output $script:ModulePath
-Write-Output $script:ManifestPath
-Write-Output $script:TestFile
-#>
+Write-Host -ForegroundColor Green "ModuleName   : $($script:ModuleName)";
+Write-Host -ForegroundColor Green "Githuborg    : $($script:Source)";
+Write-Host -ForegroundColor Green "Source       : $($script:Source)";
+Write-Host -ForegroundColor Green "Output       : $($script:Output)";
+Write-Host -ForegroundColor Green "Docs         : $($script:Docs)";
+Write-Host -ForegroundColor Green "Destination  : $($script:Destination)";
+Write-Host -ForegroundColor Green "ModulePath   : $($script:ModulePath)";
+Write-Host -ForegroundColor Green "ManifestPath : $($script:ManifestPath)";
+Write-Host -ForegroundColor Green "TestFile     : $($script:TestFile)";
+Write-Host -ForegroundColor Green "Repository   : $($script:Repository)";
+Write-Host -ForegroundColor Green "PoshGallery  : $($script:PoshGallery)";
+Write-Host -ForegroundColor Green "DeployBranch : $($script:DeployBranch)";
 
 Task LocalUse -description "Use for local testing" -depends Clean, BuildNestedModules, BuildNestedManifests, BuildModule , BuildManifest
 
