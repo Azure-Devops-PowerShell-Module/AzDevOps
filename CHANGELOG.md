@@ -11,8 +11,11 @@ This release adds the git endpoint as well as testing for module functions.
 
 What's changed:
 
-1. Git Endpoint Functions
-   1. Get-AdoRepository
+1. Git Repositories Functions [ADPM-4](https://pattontech.atlassian.net/browse/ADPM-4)
+   1. Get-AdoRepository [ADPM-2](https://pattontech.atlassian.net/browse/ADPM-2)
+   2. New-AdoRepository [ADPM-3](https://pattontech.atlassian.net/browse/ADPM-3)
+      1. See Github Issue [587](https://github.com/MicrosoftDocs/vsts-rest-api-specs/issues/587)
+2. Update API Version across functions [ADPM-7](https://pattontech.atlassian.net/browse/ADPM-7)
 
 --
 
