@@ -244,7 +244,7 @@ Task NewTaggedRelease -Description "Create a tagged release" -Action {
 
 Task Post2Discord -Description "Post a message to discord" -Action {
  $version = (Get-Module -Name $($script:ModuleName) | Select-Object -Property Version).Version.ToString()
- $Discord = Get-Content .\discord.poshmongo | ConvertFrom-Json
+ $Discord = Get-Content .\discord.azdevops | ConvertFrom-Json
  $Discord.message.content = "Version $($version) of $($script:ModuleName) released. Please visit Github ($($script:Repository)/$($script:ModuleName)) or PowershellGallery ($($PoshGallery)) to download."
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
