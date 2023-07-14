@@ -12,10 +12,27 @@ $script:Repository = "https://github.com/$($script:GithubOrg)"
 $script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
 $script:DeployBranch = 'master'
 
-$BuildHelpers = Get-Module -ListAvailable | Where-Object -Property Name -eq BuildHelpers;
-if ($BuildHelpers)
+$CurrentBuildHelpers = Get-Module -ListAvailable | Where-Object -Property Name -eq BuildHelpers;
+$PotentialBuildHelpers = Find-Module -Name BuildHelpers;
+$CheckVersion = [System.Version]::new($CurrentBuildHelpers.Version).CompareTo([System.Version]::new($PotentialBuildHelpers.Version));
+if ($CurrentBuildHelpers)
 {
- Write-Host -ForegroundColor Blue "Info: BuildHelpers Version $($BuildHelpers.Version) Found";
+ Write-Host -ForegroundColor Blue "Info: BuildHelpers Version $($CurrentBuildHelpers.Version) Found";
+ switch ($CheckVersion)
+ {
+  0
+  {
+   Write-Host -ForegroundColor Blue "Info: BuildHelpers Version $($CurrentBuildHelpers.Version) is the latest version";
+  }
+  1
+  {
+   Write-Host -ForegroundColor Yellow "Warning: BuildHelpers Version $($CurrentBuildHelpers.Version) is newer than the latest version $($PotentialBuildHelpers.Version)";
+  }
+  -1
+  {
+   Write-Host -ForegroundColor Red "Warning: BuildHelpers Version $($CurrentBuildHelpers.Version) is older than the latest version $($PotentialBuildHelpers.Version)";
+  }
+ }
  Write-Host -ForegroundColor Blue "Info: This automation built with BuildHelpers Version 2.0.16";
  Import-Module BuildHelpers;
 }
@@ -23,10 +40,27 @@ else
 {
  throw "Please Install-Module -Name BuildHelpers";
 }
-$PowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
-if ($PowerShellForGitHub)
+$CurrentPowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
+$PotentialPowerShellForGitHub = Find-Module -Name PowerShellForGitHub;
+$CheckVersion = [System.Version]::new($CurrentPowerShellForGitHub.Version).CompareTo([System.Version]::new($PotentialPowerShellForGitHub.Version));
+if ($CurrentPowerShellForGitHub)
 {
- Write-Host -ForegroundColor Blue "Info: PowerShellForGitHub Version $($PowerShellForGitHub.Version) Found";
+ Write-Host -ForegroundColor Blue "Info: PowerShellForGitHub Version $($CurrentPowerShellForGitHub.Version) Found";
+ switch ($CheckVersion)
+ {
+  0
+  {
+   Write-Host -ForegroundColor Blue "Info: PowerShellForGitHub Version $($CurrentPowerShellForGitHub.Version) is the latest version";
+  }
+  1
+  {
+   Write-Host -ForegroundColor Yellow "Warning: PowerShellForGitHub Version $($CurrentPowerShellForGitHub.Version) is newer than the latest version $($PotentialPowerShellForGitHub.Version)";
+  }
+  -1
+  {
+   Write-Host -ForegroundColor Red "Warning: PowerShellForGitHub Version $($CurrentPowerShellForGitHub.Version) is older than the latest version $($PotentialPowerShellForGitHub.Version)";
+  }
+ }
  Write-Host -ForegroundColor Blue "Info: This automation built with PowerShellForGitHub Version 0.16.1";
  Import-Module PowerShellForGitHub;
 }
