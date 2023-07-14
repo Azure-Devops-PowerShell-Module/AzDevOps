@@ -68,6 +68,34 @@ else
 {
  throw "Please Install-Module -Name PowerShellForGitHub";
 }
+$CurrentPsScriptAnalyzer = Get-Module -ListAvailable | Where-Object -Property Name -eq PSScriptAnalyzer
+$PotentialPsScriptAnalyzer = Find-Module -Name PSScriptAnalyzer
+$CheckVersion = [System.Version]::new($CurrentPsScriptAnalyzer.Version).CompareTo([System.Version]::new($PotentialPsScriptAnalyzer.Version));
+if ($CurrentPsScriptAnalyzer)
+{
+ Write-Host -ForegroundColor Blue "Info: PSScriptAnalyzer Version $($CurrentPsScriptAnalyzer.Version) Found";
+ switch ($CheckVersion)
+ {
+  0
+  {
+   Write-Host -ForegroundColor Blue "Info: PSScriptAnalyzer Version $($CurrentPsScriptAnalyzer.Version) is the latest version";
+  }
+  1
+  {
+   Write-Host -ForegroundColor Yellow "Warning: PSScriptAnalyzer Version $($CurrentPsScriptAnalyzer.Version) is newer than the latest version $($PotentialPsScriptAnalyzer.Version)";
+  }
+  -1
+  {
+   Write-Host -ForegroundColor Red "Warning: PSScriptAnalyzer Version $($CurrentPsScriptAnalyzer.Version) is older than the latest version $($PotentialPsScriptAnalyzer.Version)";
+  }
+ }
+ Write-Host -ForegroundColor Blue "Info: This automation built with PSScriptAnalyzer Version 1.21.1";
+ Import-Module PSScriptAnalyzer;
+}
+else
+{
+ throw "Please Install-Module -Name PSScriptAnalyzer";
+}
 
 Write-Host -ForegroundColor Green "ModuleName   : $($script:ModuleName)";
 Write-Host -ForegroundColor Green "Githuborg    : $($script:Source)";
@@ -338,4 +366,74 @@ Task PublishModule -Description "Publish module to PowerShell Gallery" -Action {
   NuGetApiKey = "$($config.configuration.apikeys.add.value)"
  }
  Publish-Module @Parameters;
+}
+
+Task NewModule -Description "A task to build a new module" -Action {
+ $ModuleName = Read-Host -Prompt "Enter the name of the module";
+ $ManifestPath = Read-Host -Prompt "Enter the path to the module manifest file";
+ $Description = Read-Host -Prompt "Enter the description for the module";
+ $Author = 'jeffrey@patton-tech.com';
+ $CompanyName = 'Patton-Tech.com';
+ $CopyRight = (Get-Date)
+ $Guid = (New-Guid).Guid;
+ $ModuleVersion = '1.0.0';
+ $RootModule = "$($ModuleName).psm1";
+ if ($ManifestPath.Contains('.psd1'))
+ {
+  $Count = $ManifestPath.Split('\').Count;
+  $ManifestFileName = $manifestPath.Split('\')[$Count - 1];
+  $TestPath = $ManifestPath.Replace($ManifestFileName, '');
+  if (!(Test-Path -Path $TestPath))
+  {
+   if (!($ModuleName.endswith('s')))
+   {
+    $PluralizedModuleName = "$($ModuleName)s";
+   }
+   $ModuleRootPath = (Join-Path $TestPath $PluralizedModuleName)
+   $ModulePublicCodePath = (Join-Path $ModuleRootPath 'Public')
+   $ModulePrivateCodePath = (Join-Path $ModuleRootPath 'Private')
+   $TestPath = New-Item -Path $TestPath -ItemType Directory;
+   $ModuleRootPath = New-Item -Path $ModuleRootPath -ItemType Directory;
+   $ModulePublicCodePath = New-Item -Path $ModulePublicCodePath -ItemType Directory;
+   $ModulePrivateCodePath = New-Item -Path $ModulePrivateCodePath -ItemType Directory;
+  }
+  New-ModuleManifest -Path $ManifestPath -Description $Description -Author $Author -CompanyName $CompanyName -Copyright $CopyRight -Guid $Guid -ModuleVersion $ModuleVersion -RootModule $RootModule;
+ }
+ else
+ {
+  $TestPath = $ManifestPath;
+  if (!(Test-Path -Path $TestPath))
+  {
+   if (!($ModuleName.endswith('s')))
+   {
+    $PluralizedModuleName = "$($ModuleName)s";
+   }
+   $ModuleRootPath = (Join-Path $TestPath $PluralizedModuleName)
+   $ModulePublicCodePath = (Join-Path $ModuleRootPath 'Public')
+   $ModulePrivateCodePath = (Join-Path $ModuleRootPath 'Private')
+   $TestPath = New-Item -Path $TestPath -ItemType Directory;
+   $ModuleRootPath = New-Item -Path $ModuleRootPath -ItemType Directory;
+   $ModulePublicCodePath = New-Item -Path $ModulePublicCodePath -ItemType Directory;
+   $ModulePrivateCodePath = New-Item -Path $ModulePrivateCodePath -ItemType Directory;
+  }
+  $ManifestFileName = "$($ModuleName).psd1";
+  $ManifestPath = (Join-Path $TestPath $ManifestFileName);
+  New-ModuleManifest -Path $ManifestPath -Description $Description -Author $Author -CompanyName $CompanyName -Copyright $CopyRight -Guid $Guid -ModuleVersion $ModuleVersion -RootModule $RootModule;
+ }
+ Write-Host -ForegroundColor Green "Setting up Nested Module";
+ Write-Host -ForegroundColor Green "ModuleName            : $($ModuleName)";
+ write-host -ForegroundColor Green "ManifestPath          : $($ManifestPath)";
+ Write-Host -ForegroundColor Green "Description           : $($Description)";
+ Write-Host -ForegroundColor Green "Author                : $($Author)";
+ Write-Host -ForegroundColor Green "CompanyName           : $($CompanyName)";
+ Write-Host -ForegroundColor Green "CopyRight             : $($CopyRight)";
+ Write-Host -ForegroundColor Green "Guid                  : $($Guid)";
+ Write-Host -ForegroundColor Green "ModuleVersion         : $($ModuleVersion)";
+ Write-Host -ForegroundColor Green "RootModule            : $($RootModule)";
+ Write-Host -ForegroundColor Green "TestPath              : $($TestPath.FullName)";
+ Write-Host -ForegroundColor Green "PluralizedModuleName  : $($PluralizedModuleName)";
+ Write-Host -ForegroundColor Green "ManifestFileName      : $($ManifestFileName)";
+ Write-Host -ForegroundColor Green "ModuleRootPath        : $($ModuleRootPath.FullName)";
+ Write-Host -ForegroundColor Green "ModulePublicCodePath  : $($ModulePublicCodePath.FullName)";
+ Write-Host -ForegroundColor Green "ModulePrivateCodePath : $($ModulePrivateCodePath.FullName)";
 }
