@@ -23,7 +23,7 @@ function Get-Repository
    Write-Verbose "GetRepository : Begin Processing";
    if ($PSCmdlet.ParameterSetName -eq 'Project')
    {
-    Write-Verbose " ProjectId    : $($Project.Id)";
+    Write-Verbose " Project      : $($Project)";
    }
    else
    {
@@ -40,12 +40,16 @@ function Get-Repository
    {
     if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
     {
-     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     $ThisProject = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
     }
-    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/git/repositories?api-version=$($ApiVersion)";
+    if ($PSCmdlet.ParameterSetName -eq 'Project')
+    {
+     $ThisProject = Get-AdoProject -Verbose:$VerbosePreference |Where-Object -Property Name -eq $Project;
+    }
+    $Uri = $Global:azDevOpsOrg + "$($ThisProject.Id)/_apis/git/repositories?api-version=$($ApiVersion)";
     if ($Name)
     {
-     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/git/repositories/$($Name)?api-version=$($ApiVersion)";
+     $Uri = $Global:azDevOpsOrg + "$($ThisProject.Id)/_apis/git/repositories/$($Name)?api-version=$($ApiVersion)";
      return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
     }
     else
