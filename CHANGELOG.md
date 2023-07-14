@@ -5,6 +5,29 @@ All changes to this module should be reflected in this document.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.2.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.2.0) - 2023-08-31
+
+This release adds feed, artifact and nuget functions. We should be able to perform all CRUD operations
+on feeds. We should be able to get packages and their versions and finally download a specific package
+from nuget.
+
+A lot of updates in this release:
+
+1. Feed Management
+   1. Get a Feed [issue-37](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/37)
+   2. Get Feed View [issue-38](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/38)
+   3. Create a Feed [issue-39](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/39)
+   4. Update a Feed [issue-41](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/41)
+   5. Delete a Feed [issue-40](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/40)
+   6. Create a View [issue-42](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/42)
+   7. Update a View [issue-44](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/44)
+   8. Delete a View [issue-43](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/43)
+2. Artifact Details
+   1. Get a Package [issue-45](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/45)
+   2. Get a Package Version [issue-46](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/46)
+3. Artifact Package Types / Nuget
+   1. Download a Package [issue-47](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/47)
+
 ## [[2.1.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.1.0) - 2023-01-14
 
 This release adds the git endpoint as well as testing for module functions.
