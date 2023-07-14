@@ -1,14 +1,14 @@
-# v2.0.0
+# v2.1.0
+Add functions for the repos endpoint and pester tests for the module as a whole
 
-## DOCUMENTATION
+## BUG
 
-* Complete Documentation #26
+* HelpUri Validation #34
 
 ## ENHANCEMENT
 
-* Add Build Endpoint #27
-* API Version Updates #25
-* Custom Invoke Function #24
-* Upgrade Build Pipeline #23
-* Re-Work Module Structure #22
+* Align on API Version #33
+* Create Repo folder structre and intial files #32
+* Clean up psakefile #31
+* Create Repo Functions #29
 

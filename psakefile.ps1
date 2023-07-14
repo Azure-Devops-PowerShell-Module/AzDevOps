@@ -287,7 +287,7 @@ Task ReleaseNotes -Description "Create release notes file for module manifest" -
  $Github = (Get-Content -Path "$($PSScriptRoot)\github.token") | ConvertFrom-Json
  $Credential = New-Credential -Username ignoreme -Password $Github.Token
  Set-GitHubAuthentication -Credential $Credential
- $Milestone = (Get-GitHubMilestone -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -State Closed | Sort-Object -Property ClosedAt)[0]
+ $Milestone = (Get-GitHubMilestone -OwnerName $script:GithubOrg -RepositoryName $script:ModuleName -State Closed | Sort-Object -Property MilestoneNumber -Descending)[0]
  if ($Milestone)
  {
   [System.Text.StringBuilder]$stringbuilder = [System.Text.StringBuilder]::new()

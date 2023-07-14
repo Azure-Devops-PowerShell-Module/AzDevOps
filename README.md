@@ -36,91 +36,91 @@ This module provides the ability to manage and work with an Azure Devops organiz
 
 ## AzDevOps Cmdlets
 
-### [Connect-AdoOrganization](docs/Connect-AdoOrganization.md)
+### [Connect-AdoOrganization](Docs/Connect-AdoOrganization.md)
 
 This function will connect to Azure DevOps
 
-### [Get-AdoBuild](docs/Get-AdoBuild.md)
+### [Get-AdoBuild](Docs/Get-AdoBuild.md)
 
 Return one or more builds from a project
 
-### [Get-AdoBuildDefinition](docs/Get-AdoBuildDefinition.md)
+### [Get-AdoBuildDefinition](Docs/Get-AdoBuildDefinition.md)
 
 Gets a definition, optionally at a specific revision.
 
-### [Get-AdoBuildFolder](docs/Get-AdoBuildFolder.md)
+### [Get-AdoBuildFolder](Docs/Get-AdoBuildFolder.md)
 
 Gets a list of build definition folders
 
-### [Get-AdoBuildLog](docs/Get-AdoBuildLog.md)
+### [Get-AdoBuildLog](Docs/Get-AdoBuildLog.md)
 
 Gets the logs for a build
 
-### [Get-AdoOperation](docs/Get-AdoOperation.md)
+### [Get-AdoOperation](Docs/Get-AdoOperation.md)
 
 Gets an operation from the the operationId using the given pluginId.
 
-### [Get-AdoProcess](docs/Get-AdoProcess.md)
+### [Get-AdoProcess](Docs/Get-AdoProcess.md)
 
 Get one or more available processes
 
-### [Get-AdoProject](docs/Get-AdoProject.md)
+### [Get-AdoProject](Docs/Get-AdoProject.md)
 
 Get one or many projects from Azure DevOps
 
-### [Get-AdoProjectProperty](docs/Get-AdoProjectProperty.md)
+### [Get-AdoProjectProperty](Docs/Get-AdoProjectProperty.md)
 
 Get a collection of team project Property
 
-### [Get-AdoTeam](docs/Get-AdoTeam.md)
+### [Get-AdoTeam](Docs/Get-AdoTeam.md)
 
 Get a specific team
 
-### [Get-AdoTeamMember](docs/Get-AdoTeamMember.md)
+### [Get-AdoTeamMember](Docs/Get-AdoTeamMember.md)
 
 Get a list of members for a specific team.
 
-### [Invoke-AdoEndpoint](docs/Invoke-AdoEndpoint.md)
+### [Invoke-AdoEndpoint](Docs/Invoke-AdoEndpoint.md)
 
 Query Azure Devops
 
-### [New-AdoBuildFolder](docs/New-AdoBuildFolder.md)
+### [New-AdoBuildFolder](Docs/New-AdoBuildFolder.md)
 
 Creates a new folder
 
-### [New-AdoProject](docs/New-AdoProject.md)
+### [New-AdoProject](Docs/New-AdoProject.md)
 
 Queues a project to be created
 
-### [New-AdoTeam](docs/New-AdoTeam.md)
+### [New-AdoTeam](Docs/New-AdoTeam.md)
 
 Create a team in a team project
 
-### [Remove-AdoBuild](docs/Remove-AdoBuild.md)
+### [Remove-AdoBuild](Docs/Remove-AdoBuild.md)
 
 Deletes a build
 
-### [Remove-AdoBuildFolder](docs/Remove-AdoBuildFolder.md)
+### [Remove-AdoBuildFolder](Docs/Remove-AdoBuildFolder.md)
 
 Deletes a definition folder
 
-### [Remove-AdoProject](docs/Remove-AdoProject.md)
+### [Remove-AdoProject](Docs/Remove-AdoProject.md)
 
 Queues a project to be deleted
 
-### [Remove-AdoTeam](docs/Remove-AdoTeam.md)
+### [Remove-AdoTeam](Docs/Remove-AdoTeam.md)
 
 Delete a team.
 
-### [Start-AdoBuild](docs/Start-AdoBuild.md)
+### [Start-AdoBuild](Docs/Start-AdoBuild.md)
 
 Queues a build
 
-### [Update-AdoProject](docs/Update-AdoProject.md)
+### [Update-AdoProject](Docs/Update-AdoProject.md)
 
 Update Name, Description or Abbreviation of a project
 
-### [Update-AdoTeam](docs/Update-AdoTeam.md)
+### [Update-AdoTeam](Docs/Update-AdoTeam.md)
 
 Update a team's name and/or description
 
