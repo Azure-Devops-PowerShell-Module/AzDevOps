@@ -27,6 +27,9 @@ A lot of updates in this release:
    2. Get a Package Version [issue-46](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/46)
 3. Artifact Package Types / Nuget
    1. Download a Package [issue-47](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/47)
+4. Bug Fixes
+   1. ScriptAnalyzer - PSUseProcessBlockForPipelineCommand [issue-48](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/48)
+   2. ScriptAnalyzer - PSUseToExportFieldsInManifest [issue-49](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/49)
 
 ## [[2.1.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.1.0) - 2023-01-14
 
