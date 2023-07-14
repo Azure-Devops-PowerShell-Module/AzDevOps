@@ -5,6 +5,21 @@ All changes to this module should be reflected in this document.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[2.1.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.1.0) - 2023-01-14
+
+This release adds the git endpoint as well as testing for module functions.
+
+What's changed:
+
+1. Git Repositories Functions [ADPM-4](https://pattontech.atlassian.net/browse/ADPM-4)
+   1. Get-AdoRepository [ADPM-2](https://pattontech.atlassian.net/browse/ADPM-2)
+   2. New-AdoRepository [ADPM-3](https://pattontech.atlassian.net/browse/ADPM-3)
+      1. See Github Issue [587](https://github.com/MicrosoftDocs/vsts-rest-api-specs/issues/587)
+   3. Remove-AdoRepository [ADPM-5](https://pattontech.atlassian.net/browse/ADPM-5)
+2. Update API Version across functions [ADPM-7](https://pattontech.atlassian.net/browse/ADPM-7)
+
+---
+
 ## [[2.0.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.0.0) - 2023-01-14
 
 This release is a complete overhaul of the module. Functions have been seperated into individual files and stored in
@@ -33,7 +48,7 @@ What's changed:
 5. API versions have been updated
 6. Updated documentaiton
 
---
+---
 
 ## Unreleased
 

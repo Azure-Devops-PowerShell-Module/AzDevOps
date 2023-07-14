@@ -12,7 +12,7 @@
  RootModule           = 'AzDevOps.psm1'
 
  # Version number of this module.
- ModuleVersion        = '2.0.0'
+ ModuleVersion        = '2.1.0'
 
  # Supported PSEditions
  # CompatiblePSEditions = @()
@@ -66,11 +66,11 @@
  # FormatsToProcess = @()
 
  # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
- NestedModules = @('core\core.psd1','build\build.psd1','operations\operations.psd1')
+ NestedModules = @('core\core.psd1','build\build.psd1','operations\operations.psd1','git\git.psd1')
 
  # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
  # FunctionsToExport    = @('Connect-Organization','Invoke-RestMethod','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Operation')
- FunctionsToExport    = @('Connect-Organization','Invoke-Endpoint','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Operation')
+ FunctionsToExport    = @('Connect-Organization','Invoke-Endpoint','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Repository','New-Repository','Remove-Repository','Get-Operation')
 
  # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
  CmdletsToExport      = @()
@@ -85,7 +85,7 @@
  # DscResourcesToExport = @()
 
  # List of all modules packaged with this module
- ModuleList = @('core\core.psd1','build\build.psd1','operations\operations.psd1')
+ ModuleList = @('core\core.psd1','build\build.psd1','operations\operations.psd1','git\git.psd1')
 
  # List of all files packaged with this module
  # FileList = @()
