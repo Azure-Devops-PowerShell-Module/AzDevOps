@@ -12,7 +12,7 @@ $script:Repository = "https://github.com/$($script:GithubOrg)"
 $script:PoshGallery = "https://www.powershellgallery.com/packages/$($script:ModuleName)"
 $script:DeployBranch = 'master'
 
-$CurrentBuildHelpers = Get-Module -ListAvailable | Where-Object -Property Name -eq BuildHelpers;
+$CurrentBuildHelpers = Get-Module -ListAvailable -Name BuildHelpers;
 $PotentialBuildHelpers = Find-Module -Name BuildHelpers;
 $CheckVersion = [System.Version]::new($CurrentBuildHelpers.Version).CompareTo([System.Version]::new($PotentialBuildHelpers.Version));
 if ($CurrentBuildHelpers)
@@ -40,7 +40,7 @@ else
 {
  throw "Please Install-Module -Name BuildHelpers";
 }
-$CurrentPowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
+$CurrentPowerShellForGitHub = Get-Module -ListAvailable -Name PowerShellForGitHub;
 $PotentialPowerShellForGitHub = Find-Module -Name PowerShellForGitHub;
 $CheckVersion = [System.Version]::new($CurrentPowerShellForGitHub.Version).CompareTo([System.Version]::new($PotentialPowerShellForGitHub.Version));
 if ($CurrentPowerShellForGitHub)
@@ -68,7 +68,7 @@ else
 {
  throw "Please Install-Module -Name PowerShellForGitHub";
 }
-$CurrentPsScriptAnalyzer = Get-Module -ListAvailable | Where-Object -Property Name -eq PSScriptAnalyzer
+$CurrentPsScriptAnalyzer = Get-Module -ListAvailable -Name PSScriptAnalyzer;
 $PotentialPsScriptAnalyzer = Find-Module -Name PSScriptAnalyzer
 $CheckVersion = [System.Version]::new($CurrentPsScriptAnalyzer.Version).CompareTo([System.Version]::new($PotentialPsScriptAnalyzer.Version));
 if ($CurrentPsScriptAnalyzer)
