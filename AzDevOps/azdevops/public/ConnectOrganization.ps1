@@ -24,7 +24,7 @@ function Connect-Organization
    $Error.Clear();
    $azDevOpsHeader = @{Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($PAT)")) };
    $azDevOpsOrg = "https://dev.azure.com/$($Orgname)/";
-   $azDevOpsFeed = "https://feeds.dev.azure.com/$($Orgname)";
+   $azDevOpsFeed = "https://feeds.dev.azure.com/$($Orgname)/";
 
    $uriProjects = $azDevOpsOrg + "_apis/projects?api-version=$($ApiVersion)";
    $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($uriProjects)) -Method get -Headers $azDevOpsHeader -Verbose:$VerbosePreference;
