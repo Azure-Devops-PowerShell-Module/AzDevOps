@@ -352,7 +352,7 @@ MigrationBackup/
 ado.connection.json
 AzDevOps.nuspec
 ado.rseng.token.json
-discord.poshmongo
+discord.azdevops
 nuget.config
 ado.token.json
 github.token
