@@ -15,6 +15,7 @@ A lot of updates in this release:
 
 1. Feed Management
    1. Get a Feed [issue-37](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/37)
+      1. As part of working the feeds we needed to add a new global for the feed url 'azDevOpsFeed'
    2. Get Feed View [issue-38](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/38)
    3. Create a Feed [issue-39](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/39)
    4. Update a Feed [issue-41](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/41)
