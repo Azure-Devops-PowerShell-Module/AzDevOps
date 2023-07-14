@@ -267,7 +267,9 @@ Task NewTaggedRelease -Description "Create a tagged release" -Action {
  $Credential = New-Credential -Username ignoreme -Password $Github.Token
  Set-GitHubAuthentication -Credential $Credential
  if (!(Get-Module -Name $script:ModuleName )) { Import-Module -Name "$($script:Output)\$($script:ModuleName)" }
- $Version = (Get-Module -Name $script:ModuleName | Select-Object -Property Version).Version.ToString()
+ #$Version = (Get-Module -Name $script:ModuleName | Select-Object -Property Version).Version.ToString();
+ $ModuleManifest = Test-ModuleManifest .\AzDevOps\AzDevOps.psd1 -ErrorAction SilentlyContinue;
+ $Version = $ModuleManifest.Version.ToString();
  git add .
  git commit . -m "Updated ExternalHelp for $($Version) Release"
  git push
