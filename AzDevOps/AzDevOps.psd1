@@ -70,7 +70,7 @@
 
  # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
  # FunctionsToExport    = @('Connect-Organization','Invoke-RestMethod','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Operation')
- FunctionsToExport    = @('Connect-Organization','Invoke-Endpoint','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Feed','Get-Repository','New-Repository','Remove-Repository','Get-Operation')
+ FunctionsToExport    = @('Connect-Organization','Invoke-Endpoint','Get-Build','Get-BuildLog','Remove-Build','Start-Build','Get-BuildDefinition','Get-BuildFolder','New-BuildFolder','Remove-BuildFolder','Get-Process','Get-Project','Get-ProjectProperty','New-Project','Remove-Project','Update-Project','Get-Team','Get-TeamMember','New-Team','Remove-Team','Update-Team','Get-Feed','Get-FeedView','Get-Repository','New-Repository','Remove-Repository','Get-Operation')
 
  # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
  CmdletsToExport      = @()
