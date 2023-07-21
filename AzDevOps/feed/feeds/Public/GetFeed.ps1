@@ -35,7 +35,7 @@ function Get-Feed
      $Uri = $Global:azDevOpsFeed + "$($thisProject.id)/_apis/packaging/feeds?api-version=$($ApiVersion)";
      if ($Name)
      {
-      $Feed = Get-AdoFeed -Project $thisProject.Name |Where-Object -Property Name -eq $Name -Verbose:$VerbosePreference;
+      $Feed = Get-AdoFeed -Project $thisProject.Name | Where-Object -Property Name -eq $Name -Verbose:$VerbosePreference;
       Write-Verbose " FeedId       : $($Feed.id)";
       $Uri = $Global:azDevOpsFeed + "$($thisProject.id)/_apis/packaging/feeds/$($Feed.id)?api-version=$($ApiVersion)";
       return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
