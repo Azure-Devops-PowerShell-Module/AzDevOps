@@ -16,8 +16,8 @@ function Remove-Build
   [int]$BuildId,
 
   [Parameter(Mandatory = $false)]
-  [ValidateSet('5.1', '7.1-preview.7')]
-  [string]$ApiVersion = '7.1-preview.7'
+  [ValidateSet('5.1', '7.1-preview.7','7.2-preview.2')]
+  [string]$ApiVersion = '7.2-preview.2'
  )
 
  process

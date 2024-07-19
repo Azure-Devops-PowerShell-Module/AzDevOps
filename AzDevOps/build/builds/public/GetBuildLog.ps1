@@ -23,8 +23,8 @@ function Get-BuildLog
   [int]$LogId,
 
   [Parameter(Mandatory = $false)]
-  [ValidateSet('5.1', '7.1-preview.2')]
-  [string]$ApiVersion = '7.1-preview.2'
+  [ValidateSet('5.1', '7.1-preview.2','7.2-preview.2')]
+  [string]$ApiVersion = '7.2-preview.2'
  )
 
  begin
