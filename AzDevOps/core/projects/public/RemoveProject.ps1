@@ -7,40 +7,51 @@ function Remove-Project
  param (
   [Parameter(Mandatory = $true)]
   [object]$Project,
+
   [Parameter(Mandatory = $false)]
-  [ValidateSet('5.1', '7.1-preview.4')]
-  [string]$ApiVersion = '7.1-preview.4'
+  [ValidateSet('5.1', '7.1-preview.4', '7.2-preview.4')]
+  [string]$ApiVersion = '7.2-preview.4'
  )
+
  begin
  {
-  Write-Verbose "RemoveProject    : Begin Processing";
-  Write-Verbose " ProjectId       : $($Project.Id)";
-  Write-Verbose " ApiVersion      : $($ApiVersion)";
+  Write-Verbose "RemoveProject: Begin Processing"
+  Write-Verbose "ProjectId: $($Project.Id)"
+  Write-Verbose "ApiVersion: $($ApiVersion)"
+ }
+
+ process
+ {
   try
   {
-   $ErrorActionPreference = 'Stop';
-   $Error.Clear();
-   #
-   # Are we connected
-   #
-   if ($Global:azDevOpsConnected)
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
+
+   if (-not $Global:azDevOpsConnected)
    {
-    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)?api-version=$($ApiVersion)";
-    if ($PSCmdlet.ShouldProcess("Remove", "Delete $($Project.Name) from $($Global:azDevOpsOrg) Azure Devops"))
-    {
-     $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
-    }
-    do
-    {
-     $Status = Get-AdoOperations -OperationId $Result.id -Verbose:$VerbosePreference;
-     Write-Verbose $Status.status;
-    } until ($Status.status -eq 'succeeded')
-    return "Project $($Project.name) removed";
+    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
    }
+
+   $Uri = "$($Global:azDevOpsOrg)_apis/projects/$($Project.Id)?api-version=$($ApiVersion)"
+   Write-Verbose "Uri: $($Uri)"
+
+   if ($PSCmdlet.ShouldProcess("Remove", "Delete $($Project.Name) from $($Global:azDevOpsOrg) Azure DevOps"))
+   {
+    $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference
+   }
+
+   do
+   {
+    $Status = Get-AdoOperation -OperationId $Result.id -Verbose:$VerbosePreference
+    Write-Verbose "Status: $($Status.status)"
+    Start-Sleep -Seconds 1
+   } until ($Status.status -eq 'succeeded')
+
+   return "Project $($Project.Name) removed"
   }
   catch
   {
-   throw $_;
+   throw $_
   }
  }
 }
