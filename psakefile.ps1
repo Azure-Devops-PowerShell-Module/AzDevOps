@@ -40,7 +40,7 @@ else
 {
  throw "Please Install-Module -Name BuildHelpers";
 }
-$CurrentPowerShellForGitHub = Get-Module -ListAvailable -Name PowerShellForGitHub;
+$CurrentPowerShellForGitHub = (Get-Module -ListAvailable -Name PowerShellForGitHub)[0];
 $PotentialPowerShellForGitHub = Find-Module -Name PowerShellForGitHub;
 $CheckVersion = [System.Version]::new($CurrentPowerShellForGitHub.Version).CompareTo([System.Version]::new($PotentialPowerShellForGitHub.Version));
 if ($CurrentPowerShellForGitHub)

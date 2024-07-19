@@ -26,9 +26,7 @@ function Get-FeedView
   {
    $ErrorActionPreference = 'Stop';
    $Error.Clear();
-   #
-   # Are we connected
-   #
+   Write-Verbose " Connected        : $($Global:azDevOpsConnected)";
    if ($Global:azDevOpsConnected)
    {
     if (!([string]::IsNullOrEmpty($Feed)) -and ([string]::IsNullOrEmpty($Project)) -and ([string]::IsNullOrEmpty($Name)))
@@ -42,7 +40,7 @@ function Get-FeedView
     {
      $thisFeed = Get-AdoFeed -Name $Feed -Verbose:$VerbosePreference;
      $Uri = $Global:azDevOpsFeed + "_apis/packaging/feeds/$($thisFeed.id)/views?api-version=$($ApiVersion)";
-     $thisView = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value |Where-Object -Property Name -eq $Name;
+     $thisView = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value | Where-Object -Property Name -eq $Name;
      $Uri = $Global:azDevOpsFeed + "_apis/packaging/feeds/$($thisFeed.id)/views/$($thisView.id)?api-version=$($ApiVersion)";
      Write-Verbose "GetFeedView       : Specific Org View";
      Write-Verbose " Feed             : $($thisFeed.id)";
@@ -62,7 +60,7 @@ function Get-FeedView
    	 $thisProject = Get-AdoProject -Verbose:$VerbosePreference | Where-Object -Property Name -eq $Project;
      $thisFeed = Get-AdoFeed -Project $Project -Name $Feed -verbose:$VerbosePreference;
      $Uri = $Global:azDevOpsFeed + "$($thisProject.id)/_apis/packaging/feeds/$($thisFeed.id)/views?api-version=$($ApiVersion)";
-     $thisView = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value |Where-Object -Property Name -eq $Name;
+     $thisView = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference).Value | Where-Object -Property Name -eq $Name;
      $Uri = $Global:azDevOpsFeed + "$($thisProject.id)/_apis/packaging/feeds/$($thisFeed.id)/views/$($Name)?api-version=$($ApiVersion)";
      Write-Verbose "GetFeedView       : Specific Project View";
      Write-Verbose " Project          : $($thisProject.id)";
