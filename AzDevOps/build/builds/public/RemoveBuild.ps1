@@ -7,64 +7,79 @@ function Remove-Build
  param (
   [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Project')]
   [object]$Project,
+
   [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
   [Guid]$ProjectId,
+
   [Parameter(Mandatory = $true, ParameterSetName = 'Project')]
   [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
   [int]$BuildId,
+
   [Parameter(Mandatory = $false)]
   [ValidateSet('5.1', '7.1-preview.7')]
   [string]$ApiVersion = '7.1-preview.7'
  )
+
  process
  {
-  Write-Verbose "RemoveBuild  : Process Record";
+  Write-Verbose "Remove-Build: Process Record"
   if ($PSCmdlet.ParameterSetName -eq 'Project')
   {
-   Write-Verbose " ProjectID   : $($Project.Id)";
-   Write-Verbose " BuildId     : $($Build.Id)";
+   Write-Verbose "Project URL: $($Project.url)"
+   Write-Verbose "Build ID: $($BuildId)"
   }
   else
   {
-   Write-Verbose " ProjectID   : $($ProjectId)";
-   Write-Verbose " BuildId     : $($BuildId)";
+   Write-Verbose "ProjectId: $($ProjectId)"
+   Write-Verbose "BuildId: $($BuildId)"
   }
-  Write-Verbose " ApiVersion  : $($ApiVersion)";
+  Write-Verbose "ApiVersion: $($ApiVersion)"
+
   try
   {
-   $ErrorActionPreference = 'Stop';
-   $Error.Clear();
-   #
-   # Are we connected
-   #
-   if ($Global:azDevOpsConnected)
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
+
+   if (-not $Global:azDevOpsConnected)
    {
-    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
+    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+   }
+
+   $BaseUri = if ($PSCmdlet.ParameterSetName -eq 'Project')
+   {
+    "$($Global:azDevOpsOrg)$($Project.Id)/_apis/build/builds/$($BuildId)"
+   }
+   else
+   {
+    "$($Global:azDevOpsOrg)$($ProjectId)/_apis/build/builds/$($BuildId)"
+   }
+
+   $Uri = "$($BaseUri)?api-version=$($ApiVersion)"
+
+   Write-Verbose "BaseUri: $($BaseUri)"
+   Write-Verbose "Uri: $($Uri)"
+
+   if ($PSCmdlet.ShouldProcess("Delete", "Remove Build $($BuildId) from Azure DevOps Project"))
+   {
+    $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference
+
+    if (-not $Result)
     {
-     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-     $Build = Get-AdoBuild -ProjectId $Project.Id -BuildId $BuildId -Verbose:$VerbosePreference;
-    }
-    if (!($Build.deleted))
-    {
-     $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/build/builds/$($Build.Id)?api-version=$($ApiVersion)";
-     if ($PSCmdlet.ShouldProcess("Delete", "Remove Build $($Build.Id) from $($Project.name) Azure Devops Projects"))
+     if ($PSCmdlet.ParameterSetName -eq 'Project')
      {
-      $Result = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Delete -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
+      return "Build: $($BuildId) removed from Project: $($Project.name)"
      }
-     if (!($Result))
+     else
      {
-      return "Build : $($Build.id) removed from Project : $($Project.name)"
+      return "Build: $($BuildId) removed from Project ID: $($ProjectId)"
      }
-    }
-    else
-    {
-     return "Build : $($Build.id) was deleted on $(Get-Date ($Build.deletedDate)) by $($Build.deletedBy.displayName)"
     }
    }
   }
   catch
   {
-   throw $_;
+   Write-Error "Error removing build: $_"
+   throw $_
   }
  }
 }
