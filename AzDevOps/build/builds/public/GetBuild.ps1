@@ -26,7 +26,7 @@ function Get-Build
   Write-Verbose "Get-AdoBuild: Begin Processing"
   if ($PSCmdlet.ParameterSetName -eq 'Project')
   {
-   Write-Verbose "Project URL: $($Project.url)"
+   Write-Verbose "ProjectId: $($Project.id)"
   }
   else
   {
@@ -61,14 +61,14 @@ function Get-Build
 
    $Uri = if ($BuildId)
    {
-    "$BaseUri/$BuildId?api-version=$ApiVersion"
+    "$($BaseUri)/$($BuildId)?api-version=$($ApiVersion)"
    }
    else
    {
-    "$BaseUri?api-version=$ApiVersion"
+    "$($BaseUri)?api-version=$($ApiVersion)"
    }
 
-   Write-Verbose "Uri: $Uri"
+   Write-Verbose "Uri: $($Uri)"
 
    $Response = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference
 
