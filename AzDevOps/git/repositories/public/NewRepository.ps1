@@ -5,103 +5,102 @@ function New-Repository
   PositionalBinding = $true)]
  [OutputType([Object])]
  param (
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Project')]
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Fork')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Repo')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Fork')]
   [object]$Project,
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Fork')]
-  [Guid]$ProjectId,
-  [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Fork')]
+
+  [Parameter(Mandatory = $true, ParameterSetName = 'Repo')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Fork')]
   [string]$Name,
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Fork')]
-  [string]$ParentRepository,
+
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Fork')]
+  [string]$ParentRepositoryId,
+
   [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Fork')]
   [string]$ParentProjectId,
+
   [Parameter(Mandatory = $false)]
-  [ValidateSet('7.0')]
-  [string]$ApiVersion = '7.0'
+  [ValidateSet('7.0', '7.2-preview.1')]
+  [string]$ApiVersion = '7.2-preview.1'
  )
+
  begin
  {
   try
   {
-   Write-Verbose "NewRepository     : Begin Processing";
-   Write-Verbose " ParametersetName : $($PSCmdlet.ParameterSetName)";
-   if ($Project)
-   {
-    Write-Verbose " ProjectId        : $($Project.Id)";
-   }
-   elseif ($ProjectId)
-   {
-    Write-Verbose " ProjectId        : $($ProjectId)";
-   }
+   Write-Verbose "NewRepository: Begin Processing"
+   Write-Verbose "ParameterSetName: $($PSCmdlet.ParameterSetName)"
+   Write-Verbose "ProjectId: $($Project.Id)"
    if ($PSCmdlet.ParameterSetName -eq 'Fork')
    {
-    Write-Verbose " ParentRepository : $($ParentRepository)";
-    Write-Verbose " ParentProjectId  : $($ParentProjectId)";
+    Write-Verbose "ParentRepositoryId: $($ParentRepositoryId)"
+    Write-Verbose "ParentProjectId: $($ParentProjectId)"
    }
    else
    {
-    Write-Verbose " Name             : $($Name)";
+    Write-Verbose "Name: $($Name)"
    }
-   Write-Verbose " ApiVersion       : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop';
-   $Error.Clear();
-   #
-   # Are we connected
-   #
-   if ($Global:azDevOpsConnected)
+   Write-Verbose "ApiVersion: $($ApiVersion)"
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
+
+   if (-not $Global:azDevOpsConnected)
    {
-    if ($ProjectId)
+    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+   }
+
+   $Uri = "$($Global:azDevOpsOrg)_apis/git/repositories?api-version=$($ApiVersion)"
+
+   switch ($PSCmdlet.ParameterSetName)
+   {
+    'Repo'
     {
-     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
+     [System.Text.StringBuilder]$stringBuilder = New-Object System.Text.StringBuilder
+     $stringBuilder.AppendLine("{") | Out-Null
+     $stringBuilder.AppendLine("  `"name`": `"$($Name)`",") | Out-Null
+     $stringBuilder.AppendLine("  `"project`": {") | Out-Null
+     $stringBuilder.AppendLine("    `"id`": `"$($Project.Id)`"") | Out-Null
+     $stringBuilder.AppendLine("  }") | Out-Null
+     $stringBuilder.AppendLine("}") | Out-Null
+     $Body = $stringBuilder.ToString() | ConvertFrom-Json | ConvertTo-Json -Compress
     }
-    $Uri = $Global:azDevOpsOrg + "_apis/git/repositories?api-version=$($ApiVersion)";
-    [System.Text.StringBuilder]$stringBuilder = New-Object System.Text.StringBuilder;
-    $stringBuilder.AppendLine("{") | Out-Null;
-    $stringBuilder.AppendLine(" `"name`": `"$($Name)`",") | Out-Null;
-    $stringBuilder.AppendLine(" `"project`" : {") | Out-Null;
-    $stringBuilder.AppendLine("  `"id`":`"$($Project.Id)`"") | Out-Null;
-    $stringBuilder.AppendLine(" },") | Out-Null;
-    $stringBuilder.AppendLine("}") | Out-Null;
-    $Body = $stringBuilder.ToString() | ConvertFrom-Json | ConvertTo-Json -Compress;
-    if ($PSCmdlet.ParameterSetName -eq 'Fork')
+    'Fork'
     {
-     $Parent = Get-AdoRepository -Project $project -Name $ParentRepository;
-     [System.Text.StringBuilder]$stringBuilder = New-Object System.Text.StringBuilder;
-     $stringBuilder.AppendLine("{") | Out-Null;
-     $stringBuilder.AppendLine(" `"name`": `"$($Name)`",") | Out-Null;
-     $stringBuilder.AppendLine(" `"project`" : {") | Out-Null;
-     $stringBuilder.AppendLine("  `"id`":`"$($Project.Id)`"") | Out-Null;
-     $stringBuilder.AppendLine(" },") | Out-Null;
-     $stringBuilder.AppendLine(" `"parentRepository`": {") | Out-Null;
-     $stringBuilder.AppendLine("  `"id`": `"$($Parent.id)`",") | Out-Null;
-     $stringBuilder.AppendLine("  `"project`": {") | Out-Null;
+     $ParentUri = "$($Global:azDevOpsOrg)_apis/git/repositories/$($ParentRepositoryId)?api-version=$($ApiVersion)"
+     $Parent = (Invoke-AdoEndpoint -Uri ([System.Uri]::new($ParentUri)) -Method Get -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference)
+     [System.Text.StringBuilder]$stringBuilder = New-Object System.Text.StringBuilder
+     $stringBuilder.AppendLine("{") | Out-Null
+     $stringBuilder.AppendLine("  `"name`": `"$($Name)`",") | Out-Null
+     $stringBuilder.AppendLine("  `"project`": {") | Out-Null
+     $stringBuilder.AppendLine("    `"id`": `"$($Project.Id)`"") | Out-Null
+     $stringBuilder.AppendLine("  },") | Out-Null
+     $stringBuilder.AppendLine("  `"ParentRepositoryId`": {") | Out-Null
+     $stringBuilder.AppendLine("    `"id`": `"$($Parent.id)`",") | Out-Null
+     $stringBuilder.AppendLine("    `"project`": {") | Out-Null
      if ($ParentProjectId)
      {
-      $stringBuilder.AppendLine("   `"id`": `"$($ParentProjectId)`",") | Out-Null;
+      $stringBuilder.AppendLine("      `"id`": `"$($ParentProjectId)`",") | Out-Null
      }
      else
      {
-      $stringBuilder.AppendLine("   `"id`": `"$($Project.Id)`",") | Out-Null;
+      $stringBuilder.AppendLine("      `"id`": `"$($Project.Id)`",") | Out-Null
      }
-     $stringBuilder.AppendLine("  }") | Out-Null;
-     $stringBuilder.AppendLine(" }") | Out-Null;
-     $stringBuilder.AppendLine("}") | Out-Null;
-     $Body = $stringBuilder.ToString() | ConvertFrom-Json | ConvertTo-Json -Compress;
+     $stringBuilder.AppendLine("    }") | Out-Null
+     $stringBuilder.AppendLine("  }") | Out-Null
+     $stringBuilder.AppendLine("}") | Out-Null
+     $Body = $stringBuilder.ToString() | ConvertFrom-Json | ConvertTo-Json -Compress
     }
-    Write-Verbose " Body             : $($Body |Out-String)";
-    if ($PSCmdlet.ShouldProcess("New", "Create Folder $($Name) in $($Project.name) Azure Devops Projects"))
-    {
-     return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method POST -Headers $Global:azDevOpsHeader -Body ($Body) -ContentType 'application/json' -Verbose:$VerbosePreference);
-    }
+   }
+
+   Write-Verbose "Body: $($Body | Out-String)"
+   if ($PSCmdlet.ShouldProcess("New", "Create repository $($Name) in $($Project.Name) Azure DevOps Projects"))
+   {
+    return Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method POST -Headers $Global:azDevOpsHeader -Body $Body -ContentType 'application/json' -Verbose:$VerbosePreference
    }
   }
   catch
   {
-   throw $_;
+   throw $_
   }
  }
 }
