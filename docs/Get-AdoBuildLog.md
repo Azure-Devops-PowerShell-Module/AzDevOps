@@ -16,13 +16,15 @@ Gets the logs for a build
 ### Project
 
 ```powershell
-Get-AdoBuildLog -Project <Object> -Build <Object> [-LogId <Int32>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuildLog -Project <Object> -Build <Object> [-LogId <Int32>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-Get-AdoBuildLog -ProjectId <Guid> -BuildId <Int32> [-LogId <Int32>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuildLog -ProjectId <Guid> -BuildId <Int32> [-LogId <Int32>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -49,7 +51,6 @@ lastChangedOn : 8/10/2020 10:46:27 PM
 id            : 2
 type          : Container
 url           : https://dev.azure.com/patton-tech/c31a2770-9aee-4799-a078-eee0dc12cbf4/_apis/build/builds/195/logs/2
-
 ```
 
 Get the logs for a build
@@ -67,7 +68,6 @@ PS C:\> Get-AdoBuildLog -Project $Project -Build $Build -LogId 13
 2020-08-10T22:47:05.2322457Z Agent running as: 'VssAdministrator'
 2020-08-10T22:47:05.2701678Z Prepare build directory.
 2020-08-10T22:47:05.5072173Z Set build variables.
-
 ```
 
 Get the individual log file for a build.
@@ -82,7 +82,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1, 7.1-preview.2
+Accepted values: 5.1, 7.1-preview.2, 7.2-preview.2
 
 Required: False
 Position: Named

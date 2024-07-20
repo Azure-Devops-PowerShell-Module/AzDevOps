@@ -14,7 +14,8 @@ Get a collection of team project Property
 ## SYNTAX
 
 ```powershell
-Get-AdoProjectProperty [[-Project] <Object>] [[-ApiVersion] <String>] [<CommonParameters>]
+Get-AdoProjectProperty [[-Project] <Object>] [[-ApiVersion] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -74,7 +75,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1-preview.1, 7.1-preview.1
+Accepted values: 5.1-preview.1, 7.1-preview.1, 7.2-preview.1
 
 Required: False
 Position: 1

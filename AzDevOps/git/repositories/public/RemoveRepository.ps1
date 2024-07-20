@@ -2,54 +2,74 @@ function Remove-Repository
 {
  [CmdletBinding(
   HelpURI = 'https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/blob/master/docs/Remove-AdoRepository.md#remove-adorepository',
-  PositionalBinding = $true)]
+  PositionalBinding = $true
+ )]
  [OutputType([Object])]
  param (
-  [Parameter(ValueFromPipeline, Mandatory = $false, ParameterSetName = 'Project')]
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Project')]
   [object]$Project,
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
+
+  [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
   [Guid]$ProjectId,
-  [Parameter(Mandatory = $false, ParameterSetName = 'Project')]
-  [Parameter(Mandatory = $false, ParameterSetName = 'ProjectId')]
-  [string]$Name,
+
+  [Parameter(ValueFromPipeline, Mandatory = $true, ParameterSetName = 'Project')]
+  [object]$Repository,
+
+  [Parameter(Mandatory = $true, ParameterSetName = 'ProjectId')]
+  [string]$RepositoryId,
+
   [Parameter(Mandatory = $false)]
-  [ValidateSet('7.0')]
-  [string]$ApiVersion = '7.0'
+  [ValidateSet('7.0', '7.2-preview.1')]
+  [string]$ApiVersion = '7.2-preview.1'
  )
+
  begin
+ {
+  Write-Verbose "RemoveRepository: Begin Processing"
+  if ($PSCmdlet.ParameterSetName -eq 'Project')
+  {
+   Write-Verbose "ProjectId: $($Project.Id)"
+   Write-Verbose "RepositoryId: $($Repository.Id)"
+  }
+  else
+  {
+   Write-Verbose "ProjectId: $($ProjectId)"
+   Write-Verbose "RepositoryId: $($RepositoryId)"
+  }
+  Write-Verbose "ApiVersion: $($ApiVersion)"
+ }
+
+ process
  {
   try
   {
-   Write-Verbose "RemoveRepository : Begin Processing";
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
+
+   if (-not $Global:azDevOpsConnected)
+   {
+    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+   }
+
    if ($PSCmdlet.ParameterSetName -eq 'Project')
    {
-    Write-Verbose " ProjectId    : $($Project.Id)";
+    $ProjectIdToUse = $Project.Id
+    $RepositoryIdToUse = $Repository.id
    }
    else
    {
-    Write-Verbose " ProjectId    : $($ProjectId)";
+    $ProjectIdToUse = $ProjectId
+    $RepositoryIdToUse = $RepositoryId
    }
-   Write-Verbose " Name         : $($Name)";
-   Write-Verbose " ApiVersion   : $($ApiVersion)";
-   $ErrorActionPreference = 'Stop';
-   $Error.Clear();
-   #
-   # Are we connected
-   #
-   if ($Global:azDevOpsConnected)
-   {
-    if ($PSCmdlet.ParameterSetName -eq 'ProjectId')
-    {
-     $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-    }
-    $Repository = Get-AdoRepository -Project $Project -Name $Name;
-    $Uri = $Global:azDevOpsOrg + "$($Project.Id)/_apis/git/repositories/$($Repository.id)?api-version=$($ApiVersion)";
-    return (Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference);
-   }
+
+   $Uri = "$($Global:azDevOpsOrg)$($ProjectIdToUse)/_apis/git/repositories/$($RepositoryIdToUse)?api-version=$($ApiVersion)"
+   Write-Verbose "Uri: $($Uri)"
+
+   return Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference
   }
   catch
   {
-   throw $_;
+   throw $_
   }
  }
 }

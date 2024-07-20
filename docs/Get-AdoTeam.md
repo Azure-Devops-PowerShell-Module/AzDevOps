@@ -16,13 +16,15 @@ Get a specific team
 ### Project
 
 ```powershell
-Get-AdoTeam [-Project <Object>] [-TeamId <Guid>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoTeam [-Project <Object>] [-TeamId <Guid>] [-ApiVersion <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-Get-AdoTeam [-ProjectId <Guid>] [-TeamId <Guid>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoTeam [-ProjectId <Guid>] [-TeamId <Guid>] [-ApiVersion <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -91,7 +93,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1-preview.3, 7.1-preview.3
+Accepted values: 5.1-preview.3, 7.1-preview.3, 7.2-preview.3
 
 Required: False
 Position: Named

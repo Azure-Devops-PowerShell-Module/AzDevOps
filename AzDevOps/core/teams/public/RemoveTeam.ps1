@@ -7,44 +7,50 @@ function Remove-Team
  param (
   [Parameter(Mandatory = $true)]
   [Guid]$ProjectId,
+
   [Parameter(Mandatory = $true)]
   [Guid]$TeamId,
+
   [Parameter(Mandatory = $false)]
-  [ValidateSet('5.1-preview.3', '7.1-preview.3')]
-  [string]$ApiVersion = '7.1-preview.3'
+  [ValidateSet('5.1-preview.3', '7.1-preview.3', '7.2-preview.3')]
+  [string]$ApiVersion = '7.2-preview.3'
  )
+
  begin
  {
-  Write-Verbose "RemoveTeam  : Begin Processing";
-  Write-Verbose " ProjectId  : $($Project.Id)";
-  Write-Verbose " TeamId     : $($TeamId)";
-  Write-Verbose " ApiVersion : $($ApiVersion)";
+  Write-Verbose "RemoveTeam: Begin Processing"
+  Write-Verbose "ProjectId: $($ProjectId)"
+  Write-Verbose "TeamId: $($TeamId)"
+  Write-Verbose "ApiVersion: $($ApiVersion)"
+ }
+
+ process
+ {
   try
   {
-   $ErrorActionPreference = 'Stop';
-   $Error.Clear();
-   #
-   # Are we connected
-   #
-   if ($Global:azDevOpsConnected)
-   {
-    $Project = Get-AdoProject -ProjectId $ProjectId -Verbose:$VerbosePreference;
-    $Team = Get-AdoTeam -ProjectId $ProjectId -TeamId $TeamId -Verbose:$VerbosePreference;
+   $ErrorActionPreference = 'Stop'
+   $Error.Clear()
 
-    $Uri = $Global:azDevOpsOrg + "_apis/projects/$($Project.id)/teams/$($Team.id)?api-version=$($ApiVersion)"
-    if ($PSCmdlet.ShouldProcess("Delete", "Remove team $($Team.name) from $($Project.name) Azure Devops Projects"))
+   if (-not $Global:azDevOpsConnected)
+   {
+    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+   }
+
+   $Uri = "$($Global:azDevOpsOrg)_apis/projects/$($ProjectId)/teams/$($TeamId)?api-version=$($ApiVersion)"
+   Write-Verbose "Uri: $($Uri)"
+
+   if ($PSCmdlet.ShouldProcess("Delete", "Remove team with ID $($TeamId) from project with ID $($ProjectId)"))
+   {
+    $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference
+    if (-not $Result)
     {
-     $Result = Invoke-AdoEndpoint -Uri ([System.Uri]::new($Uri)) -Method DELETE -Headers $Global:azDevOpsHeader -Verbose:$VerbosePreference;
-     if (!($Result))
-     {
-      return "Team : $($Team.id) removed from Project : $($Project.id)";
-     }
+     return "Team: $($TeamId) removed from Project: $($ProjectId)"
     }
    }
   }
   catch
   {
-   throw $_;
+   throw $_
   }
  }
 }

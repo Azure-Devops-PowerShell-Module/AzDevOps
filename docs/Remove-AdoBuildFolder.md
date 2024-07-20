@@ -16,15 +16,15 @@ Deletes a definition folder
 ### Project
 
 ```powershell
-Remove-AdoBuildFolder [-Project <Object>] -Name <String> [-ApiVersion <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-AdoBuildFolder [-Project <Object>] -Name <String> [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-Remove-AdoBuildFolder [-ProjectId <Guid>] -Name <String> [-ApiVersion <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Remove-AdoBuildFolder [-ProjectId <Guid>] -Name <String> [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,7 +48,6 @@ Performing the operation "Remove Folder TestFolder from AzDevOps Azure Devops Pr
 path createdOn           project
 ---- ---------           -------
 \    4/8/2020 2:46:31 PM @{id=c31a2770-9aee-4799-a078-eee0dc12cbf4; name=AzDevOps; description=A project for working with Azure Devops using PowerShell; url=https://dev.azure.com/patton-tech/_apis/projects/c…
-
 ```
 
 Remove a folder
@@ -63,7 +62,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.0-preview.2, 7.1-preview.2
+Accepted values: 5.0-preview.2, 7.1-preview.2, 7.2-preview.2
 
 Required: False
 Position: Named
@@ -82,6 +81,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

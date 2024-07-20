@@ -19,7 +19,7 @@ function Invoke-Endpoint
  )
  begin
  {
-  Write-Verbose "InvokeRestMethod : Begin Processing";
+  Write-Verbose "InvokeEndpoint : Begin Processing";
   Write-Verbose " Uri             : $($Uri.AbsoluteUri)";
   Write-Verbose " Method          : $($Method)";
   Write-Verbose " Headers         : $($Headers)";

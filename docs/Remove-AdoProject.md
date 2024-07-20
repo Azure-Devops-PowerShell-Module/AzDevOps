@@ -14,7 +14,8 @@ Queues a project to be deleted
 ## SYNTAX
 
 ```powershell
-Remove-AdoProject [-Project] <Object> [[-ApiVersion] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AdoProject [-Project] <Object> [[-ApiVersion] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -61,10 +62,26 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1, 7.1-preview.4
+Accepted values: 5.1, 7.1-preview.4, 7.2-preview.4
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -16,13 +16,15 @@ Gets a definition, optionally at a specific revision.
 ### Project
 
 ```powershell
-Get-AdoBuildDefinition [-Project <Object>] [-DefinitionId <Int32>] [-Revision <int>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuildDefinition [-Project <Object>] [-DefinitionId <Int32>] [-Revision <Int32>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-Get-AdoBuildDefinition [-ProjectId <Guid>] [-DefinitionId <Int32>] [-Revision <int>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuildDefinition [-ProjectId <Guid>] [-DefinitionId <Int32>] [-Revision <Int32>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,7 +57,6 @@ revision    : 88
 createdDate : 4/15/2020 4:05:31 PM
 project     : @{id=c31a2770-9aee-4799-a078-eee0dc12cbf4; name=AzDevOps; description=A project for working with Azure Devops using PowerShell;
               url=https://dev.azure.com/patton-tech/_apis/projects/c31a2770-9aee-4799-a078-eee0dc12cbf4; state=wellFormed; revision=515330752; visibility=public; lastUpdateTime=4/10/2020 4:22:12 AM}
-
 ```
 
 Get a list of definitions in the project
@@ -148,7 +149,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1, 7.1-preview.7
+Accepted values: 5.1, 7.1-preview.7, 7.2-preview.7
 
 Required: False
 Position: Named

@@ -5,6 +5,23 @@ All changes to this module should be reflected in this document.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[3.0.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v3.0.0) - 2024-07-19
+
+This release addresses an bug that was discovered in issue [#56](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/issues/56), the Get-AdoTeamMember function was failing. After digging into the problem it appears that the way in which I was generating the URI was introducing problems. To add to that, the amount of times we called back to functions just for validation was making troubleshooting confusing as well as the process seem much more heavy than it is.
+
+What's Change:
+
+- I have removed nearly all the recursive calls within each function
+- A few issues were resolved with New-AdoRepository
+  - The function wasn't able to determine if we were using the forked params
+  - Renamed ParentRepository to ParentRepositoryId
+- Introduced an issue with Remove-AdoRepository
+  - Removing the call to Get-AdoRepository means we can't pass the name of the repo
+  - Added RepositoryId or a Repository object
+- Documentation updates
+
+---
+
 ## [[2.1.0]](https://github.com/Azure-Devops-PowerShell-Module/AzDevOps/releases/tag/v2.1.0) - 2023-01-14
 
 This release adds the git endpoint as well as testing for module functions.
