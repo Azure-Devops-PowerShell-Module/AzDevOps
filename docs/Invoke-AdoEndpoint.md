@@ -15,7 +15,7 @@ Query Azure Devops
 
 ```powershell
 Invoke-AdoEndpoint [-Uri] <Uri> [-Method] <String> [[-Headers] <Hashtable>] [[-ContentType] <String>]
- [[-Body] <String>] [<CommonParameters>]
+ [[-Body] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -94,6 +94,22 @@ Accepted values: GET, PATCH, POST, PUT, DELETE
 
 Required: True
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

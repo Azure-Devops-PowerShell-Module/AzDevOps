@@ -16,13 +16,15 @@ Return one or more builds from a project
 ### Project
 
 ```powershell
-Get-AdoBuild [-Project <Object>] [-BuildId <Int32>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuild [-Project <Object>] [-BuildId <Int32>] [-ApiVersion <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-Get-AdoBuild [-ProjectId <Guid>] [-BuildId <Int32>] [-ApiVersion <String>] [<CommonParameters>]
+Get-AdoBuild [-ProjectId <Guid>] [-BuildId <Int32>] [-ApiVersion <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -61,7 +63,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1, 7.1-preview.7
+Accepted values: 5.1, 7.1-preview.7, 7.2-preview.7
 
 Required: False
 Position: Named

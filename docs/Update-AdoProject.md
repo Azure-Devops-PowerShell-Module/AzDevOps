@@ -13,9 +13,9 @@ Update Name, Description or Abbreviation of a project
 
 ## SYNTAX
 
-```powershell
+```
 Update-AdoProject [[-Name] <String>] [[-Description] <String>] [-Project] <Object> [[-ApiVersion] <String>]
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -73,7 +73,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1, 7.1-preview.4
+Accepted values: 5.1, 7.1-preview.4, 7.2-preview.4
 
 Required: False
 Position: 3
@@ -109,6 +109,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -164,7 +179,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

@@ -14,8 +14,8 @@ Create a team in a team project
 ## SYNTAX
 
 ```powershell
-New-AdoTeam [-Name] <String> [[-Description] <String>] [[-Project] <Object>] [[-ApiVersion] <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+New-AdoTeam [-Name] <String> [[-Description] <String>] [[-Project] <Object>] [[-ApiVersion] <String>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -70,7 +70,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1-preview.3, 7.1-preview.3
+Accepted values: 5.1-preview.3, 7.1-preview.3, 7.2-preview.3
 
 Required: False
 Position: 3
@@ -106,6 +106,22 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

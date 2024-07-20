@@ -16,15 +16,15 @@ Creates a new folder
 ### Project
 
 ```powershell
-New-AdoBuildFolder [-Project <Object>] -Name <String> [-Description <String>] [-ApiVersion <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+New-AdoBuildFolder [-Project <Object>] -Name <String> [-Description <String>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### ProjectId
 
 ```powershell
-New-AdoBuildFolder [-ProjectId <Guid>] -Name <String> [-Description <String>] [-ApiVersion <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+New-AdoBuildFolder [-ProjectId <Guid>] -Name <String> [-Description <String>] [-ApiVersion <String>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,7 +46,6 @@ createdBy   : @{displayName=Jeffrey Patton; url=https://spsprodeus27.vssps.visua
               imageUrl=https://dev.azure.com/patton-tech/_apis/GraphProfile/MemberAvatars/aad.ZGQwYzI1YzQtNGY3MC03MThkLTgzNWYtYzJkMzlkZDRiNTA0; descriptor=aad.ZGQwYzI1YzQtNGY3MC03MThkLTgzNWYtYzJkMzlkZDRiNTA0}
 project     : @{id=c31a2770-9aee-4799-a078-eee0dc12cbf4; name=AzDevOps; description=A project for working with Azure Devops using PowerShell;
               url=https://dev.azure.com/patton-tech/_apis/projects/c31a2770-9aee-4799-a078-eee0dc12cbf4; state=wellFormed; revision=515330752; visibility=public; lastUpdateTime=4/10/2020 4:22:12 AM}
-
 ```
 
 Creating a folder
@@ -61,7 +60,7 @@ A valid API Version for this endpoint
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: 5.1-preview.2, 7.1-preview.2
+Accepted values: 5.1-preview.2, 7.1-preview.2, 7.2-preview.2
 
 Required: False
 Position: Named
@@ -96,6 +95,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
