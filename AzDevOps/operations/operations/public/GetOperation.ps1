@@ -30,7 +30,7 @@ function Get-Operation
 
    if (-not $Global:azDevOpsConnected)
    {
-    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+    throw "Not connected to Azure DevOps. Please connect using Connect-AdoOrganization."
    }
 
    $Uri = "$($Global:azDevOpsOrg)_apis/operations/$($OperationId)?api-version=$($ApiVersion)"

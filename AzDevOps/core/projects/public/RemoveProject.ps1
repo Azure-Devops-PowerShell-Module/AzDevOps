@@ -29,7 +29,7 @@ function Remove-Project
 
    if (-not $Global:azDevOpsConnected)
    {
-    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+    throw "Not connected to Azure DevOps. Please connect using Connect-AdoOrganization."
    }
 
    $Uri = "$($Global:azDevOpsOrg)_apis/projects/$($Project.Id)?api-version=$($ApiVersion)"

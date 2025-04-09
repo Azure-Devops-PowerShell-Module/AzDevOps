@@ -10,7 +10,7 @@ function Get-Project
   [Guid]$ProjectId,
 
   [Parameter(Mandatory = $false)]
-  [ValidateSet('5.1', '7.1-preview.4','7.2-preview.4')]
+  [ValidateSet('5.1', '7.1-preview.4', '7.2-preview.4')]
   [string]$ApiVersion = '7.2-preview.4'
  )
 
@@ -30,7 +30,7 @@ function Get-Project
 
    if (-not $Global:azDevOpsConnected)
    {
-    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+    throw "Not connected to Azure DevOps. Please connect using Connect-AdoOrganization."
    }
 
    if ($ProjectId)
