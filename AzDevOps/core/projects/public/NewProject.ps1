@@ -33,7 +33,7 @@ function New-Project
 
    if (-not $Global:azDevOpsConnected)
    {
-    throw "Not connected to Azure DevOps. Please connect using Connect-AzDevOps."
+    throw "Not connected to Azure DevOps. Please connect using Connect-AdoOrganization."
    }
 
    $Body = @{
